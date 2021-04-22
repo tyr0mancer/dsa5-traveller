@@ -1,4 +1,5 @@
 import {Dsa5Locations} from "./module/dsa5-locations.js";
+import {Dsa5Nightwatch} from "./module/dsa5-nightwatch.js";
 
 export const moduleName = "dsa5-traveller";
 export const meistertoolsModuleName = 'dsa5-meistertools'
@@ -12,17 +13,25 @@ Hooks.once('ready', function () {
     console.log(moduleName, "| Ready")
 });
 
-
 Hooks.on("getSceneControlButtons", (controls) => {
     const meisterPanel = controls.find(c => (c.name === meistertoolsModuleName))
     meisterPanel['tools'].push({
-        name: "travel",
-        title: 'Wildnis',
-        icon: "fas fa-tree",
+        name: "locator",
+        title: 'Locator',
+        icon: "fas fa-street-view",
         visible: true,
         button: true,
         onClick: () => new Dsa5Locations().render(true)
     })
+    meisterPanel['tools'].push({
+        name: "nightwatch",
+        title: 'Nachtwache',
+        icon: "fas fa-campground",
+        visible: true,
+        button: true,
+        onClick: () => new Dsa5Nightwatch().render(true)
+    })
+
 /*
     meisterPanel['tools'].push({
         name: "draw",
