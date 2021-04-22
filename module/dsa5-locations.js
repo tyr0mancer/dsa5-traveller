@@ -465,20 +465,17 @@ export class Dsa5Locations extends Application {
         }
     }
 
-
 }
 
 
-export const capitalize = (s) => {
+// todo terrible naming and should be in meistertools util
+const capitalize = (s) => {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-export const keyify = (s) => {
+const keyify = (s) => {
     let result = s.toLowerCase()
     result = result.replace(/[^\w_-]/g, '');
-
-    console.clear()
-    console.log(s, result)
     return result
 }

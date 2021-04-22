@@ -89,3 +89,27 @@
 .dsa5-traveller .region.index {
     display: none;
 }
+
+
+/*Danger Zone*/
+.dsa5-traveller .danger-zone {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 2px solid blue;
+}
+
+.dsa5-traveller .danger-zone-buttons.hidden {
+    display: none;
+}
+
+.dsa5-traveller .danger-zone-buttons {
+    background-color: lightcoral;
+    padding: 10px;
+}
+
+.dsa5-traveller .danger-zone-buttons button {
+    background-color: darkred;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+}

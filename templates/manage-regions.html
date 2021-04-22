@@ -34,8 +34,8 @@
         </div>
         {{/if}}
         <!--controlsOneToken-->
-
     </div>
+
     <div class="current-location">
         <div class="icon">
             <button name="update-location"><i class="far fa-compass"></i></button>
@@ -53,7 +53,6 @@
             <!--status.location-->
         </div>
     </div>
-
 
     {{#each settings.regions}}
     <div class="region head">
@@ -108,5 +107,16 @@
     <hr/>
     {{/each}}
     <!--settings.regions-->
+
+    <div class="danger-zone">
+        <div>
+            <a><h1 onclick="$('.danger-zone-buttons.hidden').toggle();">Danger Zone</h1></a>
+        </div>
+
+        <div class="danger-zone-buttons hidden">
+            <button name="unset-flags">remove regions from drawings</button>
+            <button name="reset-regions">remove all region entries</button>
+        </div>
+    </div>
 
 </section>
