@@ -1,0 +1,98 @@
+[
+  {
+    "_id": "SDkQdGF0k763areG",
+    "flags": {
+      "LockView": {
+        "boundingBox_mode": "0"
+      }
+    },
+    "type": "r",
+    "author": "ioudjIfiuEUSOg0k",
+    "x": 1688,
+    "y": 3032,
+    "width": 412,
+    "height": 195,
+    "rotation": 0,
+    "z": 0,
+    "hidden": false,
+    "locked": false,
+    "points": [],
+    "bezierFactor": 0.5,
+    "fillType": 2,
+    "fillColor": "#ffffff",
+    "fillAlpha": 1,
+    "strokeWidth": 0,
+    "strokeColor": "#cc3228",
+    "strokeAlpha": 1,
+    "texture": "systems/dsa5/icons/backgrounds/chatpaper.webp",
+    "text": "farbe füllung",
+    "fontFamily": "Signika",
+    "fontSize": 48,
+    "textColor": "#FFFFFF",
+    "textAlpha": 1
+  },
+  {
+    "_id": "2DFZ1ABbEhsk6Slb",
+    "flags": {
+      "LockView": {
+        "boundingBox_mode": "0"
+      }
+    },
+    "type": "r",
+    "author": "ioudjIfiuEUSOg0k",
+    "x": 1675.5,
+    "y": 2576.650635094611,
+    "width": 412,
+    "height": 195,
+    "rotation": 0,
+    "z": 0,
+    "hidden": true,
+    "locked": false,
+    "points": [],
+    "bezierFactor": 0.5,
+    "fillType": 0,
+    "fillColor": "#cc3228",
+    "fillAlpha": 0.5,
+    "strokeWidth": 8,
+    "strokeColor": "#cc3228",
+    "strokeAlpha": 1,
+    "texture": "",
+    "text": "lost at round1",
+    "fontFamily": "Signika",
+    "fontSize": 48,
+    "textColor": "#FFFFFF",
+    "textAlpha": 1
+  },
+  {
+    "_id": "1v10Ng4ekNieqiWZ",
+    "flags": {
+      "LockView": {
+        "boundingBox_mode": "0"
+      }
+    },
+    "type": "r",
+    "author": "ioudjIfiuEUSOg0k",
+    "x": 1688,
+    "y": 2815,
+    "width": 412,
+    "height": 195,
+    "rotation": 0,
+    "z": 0,
+    "hidden": true,
+    "locked": false,
+    "points": [],
+    "bezierFactor": 0.5,
+    "fillType": 1,
+    "fillColor": "#cc3228",
+    "fillAlpha": 1,
+    "strokeWidth": 8,
+    "strokeColor": "#cc3228",
+    "strokeAlpha": 1,
+    "texture": "",
+    "text": "lost at round2",
+    "fontFamily": "Signika",
+    "fontSize": 48,
+    "textColor": "#FFFFFF",
+    "textAlpha": 1
+  }
+]

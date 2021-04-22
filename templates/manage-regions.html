@@ -1,0 +1,105 @@
+<section class="content locator">
+
+    <nav class="locator">
+        {{#if status.viewsLocatorScene}}
+        <button class="scene active" disabled>current Scene</button>
+        {{ else }}
+        <button class="scene" name="set-locator-scene">set Scene</button>
+        {{/if}}
+
+        {{#if status.controlsOneToken}}
+        {{#if status.viewsLocatorToken}}
+        <button class="token active" disabled>this is the active Token</button>
+        {{ else }}
+        <button class="token" name="set-locator-token">set Token</button>
+        {{/if}}
+        <!--status.viewsLocatorToken-->
+        {{else}}
+        <!--controlsOneToken-->
+        <button class="token disabled" disabled style="font-size: 0.7em">not controlling exactly one token</button>
+        {{/if}}
+        <!--controlsOneToken-->
+    </nav>
+    <h1>current location</h1>
+    <pre>{{stringify settings.location}}</pre>
+    <button name="update-location">update Location</button>
+    <hr/>
+
+    <h3>Toggle Drawings Visibility</h3>
+    <p>unassigned drawings will be interpreted as (click triggers import)</p>
+    <div>
+        {{#each settings.regions}}
+        <button name="toggle-region"
+                data-show-region=true
+                data-region-key={{key}}
+                type="button">{{name}} show
+        </button>
+        <button name="toggle-region"
+                data-show-region=false
+                data-region-key={{key}}
+                type="button">{{name}} hide
+        </button>
+        <button name="toggle-region"
+                data-region-key={{key}}
+                type="button">{{name}} toggle
+        </button>
+        <hr/>
+        {{/each}}
+    </div>
+    <hr/>
+
+
+    <h3>Reset Helper</h3>
+    <button name="unset-flags">remove Flags</button>
+    <button name="reset-regions">remove Region Entries</button>
+    <button name="show-flags">show Flags</button>
+    <hr/>
+
+
+    <h3>Parse Drawings</h3>
+    <p>unassigned drawings will be interpreted as (click triggers import)</p>
+    <div>
+        {{#each settings.regions}}
+        <button name="parse-drawing" data-region-key={{key}} type="button">Parse {{name}}</button>
+        {{/each}}
+    </div>
+    <hr/>
+
+
+    <!--
+        <pre>{{stringify settings.regions}}</pre>
+    -->
+
+    <h1>Regions</h1>
+    <h2>Categories</h2>
+    <ul>
+        {{#each settings.regions}}
+        <li>{{name}}
+            <ul>
+                {{#each index}}
+                <li>
+                    <button name="toggle-region"
+                            data-show-region=true
+                            data-region-key={{../key}}
+                            data-region-id={{key}}
+                            type="button">show {{name}}
+                    </button>
+                    <button name="remove-region-entry" data-region-entry-key={{key}} data-region-key={{../key}}>remove
+                        {{name}}
+                    </button>
+                </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/each}}
+    </ul>
+    <input type="text" name="region-name"/>
+    <button name="add-region">add region</button>
+
+
+    <hr/>
+    <button name="highlight-new-drawings">highlight new drawings</button>
+    <button name="highlight-flagged-drawings">highlight flagged drawings</button>
+    <button name="highlight-specific-drawings">highlight only specific drawings</button>
+
+</section>

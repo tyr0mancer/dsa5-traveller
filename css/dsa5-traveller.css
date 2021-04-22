@@ -1,0 +1,9 @@
+nav.locator {
+    background-color: lightgreen;
+}
+
+
+nav.locator button.active {
+    background-color: green;
+    font-weight: bolder;
+}
