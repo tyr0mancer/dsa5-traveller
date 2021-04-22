@@ -58,7 +58,7 @@ export class Dsa5Locations extends Application {
         */
 
 
-        this._loadSettings(['general', 'regions'])
+        this._loadSettings(['general', 'regions', 'location'])
 
         /*
             read settings
@@ -89,6 +89,9 @@ export class Dsa5Locations extends Application {
     /* collect and provide data for the template */
     async getData() {
         const status = {
+            location: this.settings.location ? Object.keys(this.settings.location).map(key => {
+                return {key, index: this.settings.location[key]}
+            }) : [],
             controlsOneToken: (canvas.tokens?.controlled.length === 1),
             viewsLocatorScene: (this.settings.general.locatorScene === canvas.scene._id),
             viewsLocatorToken: (this.settings.general.locatorToken === canvas.tokens.controlled[0]?.data._id)
@@ -137,6 +140,7 @@ export class Dsa5Locations extends Application {
         if (!scene)
             scene = canvas.scene
         this.settings.general.locatorScene = scene._id
+        this.settings.general.locatorSceneName = scene.data.name
         this._saveSettings()
         this.render()
     }
@@ -153,6 +157,7 @@ export class Dsa5Locations extends Application {
             token = canvas.tokens.controlled[0]
         if (!token) return
         this.settings.general.locatorToken = token.data._id
+        this.settings.general.locatorTokenName = token.data.name
         this._saveSettings()
         this.render()
     }
@@ -218,7 +223,6 @@ export class Dsa5Locations extends Application {
                 drawing.hidden = hidden
             return drawing
         })
-        this.render()
     }
 
 
@@ -454,7 +458,9 @@ export class Dsa5Locations extends Application {
             location: null,
             general: {
                 locatorScene: null,
+                locatorSceneName: null,
                 locatorToken: null,
+                locatorTokenName: null,
             }
         }
     }

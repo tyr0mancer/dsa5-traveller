@@ -1,105 +1,112 @@
-<section class="content locator">
-
-    <nav class="locator">
+<section class="dsa5-traveller locator content">
+    <div class="locator-setting">
         {{#if status.viewsLocatorScene}}
-        <button class="scene active" disabled>current Scene</button>
+        <div class="scene active">
+            <button disabled><i class="far fa-map"></i></button>
+            Scene: <b>{{settings.general.locatorSceneName}}</b>
+        </div>
         {{ else }}
-        <button class="scene" name="set-locator-scene">set Scene</button>
+        <div class="scene">
+            <button class="scene" name="set-locator-scene"><i class="far fa-map"></i></button>
+            Scene: <b>{{settings.general.locatorSceneName}}</b>
+        </div>
         {{/if}}
+        <!--status.viewsLocatorScene-->
 
         {{#if status.controlsOneToken}}
         {{#if status.viewsLocatorToken}}
-        <button class="token active" disabled>this is the active Token</button>
+        <div class="token active">
+            <button disabled><i class="fas fa-users"></i></button>
+            Token: <b>{{settings.general.locatorTokenName}}</b>
+        </div>
         {{ else }}
-        <button class="token" name="set-locator-token">set Token</button>
+        <div class="token active">
+            <button name="set-locator-token"><i class="fas fa-users"></i></button>
+            Token: <b>{{settings.general.locatorTokenName}}</b>
+        </div>
         {{/if}}
         <!--status.viewsLocatorToken-->
         {{else}}
         <!--controlsOneToken-->
-        <button class="token disabled" disabled style="font-size: 0.7em">not controlling exactly one token</button>
+        <div class="token">
+            <button disabled><i class="fas fa-users"></i></button>
+            Token: <b>{{settings.general.locatorTokenName}}</b>
+        </div>
         {{/if}}
         <!--controlsOneToken-->
-    </nav>
-    <h1>current location</h1>
-    <pre>{{stringify settings.location}}</pre>
-    <button name="update-location">update Location</button>
-    <hr/>
 
-    <h3>Toggle Drawings Visibility</h3>
-    <p>unassigned drawings will be interpreted as (click triggers import)</p>
-    <div>
-        {{#each settings.regions}}
-        <button name="toggle-region"
-                data-show-region=true
-                data-region-key={{key}}
-                type="button">{{name}} show
-        </button>
-        <button name="toggle-region"
-                data-show-region=false
-                data-region-key={{key}}
-                type="button">{{name}} hide
-        </button>
-        <button name="toggle-region"
-                data-region-key={{key}}
-                type="button">{{name}} toggle
-        </button>
-        <hr/>
-        {{/each}}
     </div>
-    <hr/>
-
-
-    <h3>Reset Helper</h3>
-    <button name="unset-flags">remove Flags</button>
-    <button name="reset-regions">remove Region Entries</button>
-    <button name="show-flags">show Flags</button>
-    <hr/>
-
-
-    <h3>Parse Drawings</h3>
-    <p>unassigned drawings will be interpreted as (click triggers import)</p>
-    <div>
-        {{#each settings.regions}}
-        <button name="parse-drawing" data-region-key={{key}} type="button">Parse {{name}}</button>
-        {{/each}}
-    </div>
-    <hr/>
-
-
-    <!--
-        <pre>{{stringify settings.regions}}</pre>
-    -->
-
-    <h1>Regions</h1>
-    <h2>Categories</h2>
-    <ul>
-        {{#each settings.regions}}
-        <li>{{name}}
-            <ul>
+    <div class="current-location">
+        <div class="icon">
+            <button name="update-location"><i class="far fa-compass"></i></button>
+        </div>
+        <div class="result">
+            {{#each status.location}}
+            <div>
+                <b>{{key}}</b>
                 {{#each index}}
-                <li>
-                    <button name="toggle-region"
-                            data-show-region=true
-                            data-region-key={{../key}}
-                            data-region-id={{key}}
-                            type="button">show {{name}}
-                    </button>
-                    <button name="remove-region-entry" data-region-entry-key={{key}} data-region-key={{../key}}>remove
-                        {{name}}
-                    </button>
-                </li>
+                <span>{{this}}</span>
                 {{/each}}
-            </ul>
-        </li>
+                <!--index-->
+            </div>
+            {{/each}}
+            <!--status.location-->
+        </div>
+    </div>
+
+
+    {{#each settings.regions}}
+    <div class="region head">
+        <div>
+            <a><b onclick="$('.region.index.{{key}}').toggle();">{{name}} ({{index.length}})</b></a>
+        </div>
+        <div>
+            <button name="toggle-region"
+                    data-show-region=true
+                    data-region-key={{key}}><i class="fas fa-eye"></i></button>
+            <button name="toggle-region"
+                    data-show-region=false
+                    data-region-key={{key}}><i class="fas fa-eye-slash"></i></button>
+            <button name="toggle-region"
+                    data-region-key={{key}}
+                    type="button"><i class="fas fa-exchange-alt"></i></button>
+        </div>
+        <div>
+            <button name="parse-drawing" data-region-key={{key}}><i class="fas fa-upload"></i></button>
+        </div>
+    </div>
+    <div class="region index {{key}}">
+        {{#each index}}
+        <div class="region-entry">
+            <div>{{name}}</div>
+            <div>
+                <button name="toggle-region"
+                        data-show-region=true
+                        data-region-key={{../key}}
+                        data-region-id={{key}}
+                        type="button"><i class="fas fa-eye"></i></button>
+                <button name="toggle-region"
+                        data-show-region=false
+                        data-region-key={{../key}}
+                        data-region-id={{key}}
+                        type="button"><i class="fas fa-eye-slash"></i></button>
+                <button name="toggle-region"
+                        data-region-key={{../key}}
+                        data-region-id={{key}}
+                        type="button"><i class="fas fa-exchange-alt"></i></button>
+            </div>
+            <div>
+                <button name="remove-region-entry"
+                        data-region-entry-key={{key}}
+                        data-region-key={{../key}}><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
         {{/each}}
-    </ul>
-    <input type="text" name="region-name"/>
-    <button name="add-region">add region</button>
+        <!--index-->
 
-
+    </div>
     <hr/>
-    <button name="highlight-new-drawings">highlight new drawings</button>
-    <button name="highlight-flagged-drawings">highlight flagged drawings</button>
-    <button name="highlight-specific-drawings">highlight only specific drawings</button>
+    {{/each}}
+    <!--settings.regions-->
 
 </section>

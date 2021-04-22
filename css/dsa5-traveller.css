@@ -1,9 +1,91 @@
-nav.locator {
-    background-color: lightgreen;
+/*Set locator Scene and Locator Token*/
+.dsa5-traveller .locator-setting {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.dsa5-traveller .locator-setting button {
+    display: inline;
+    width: 64px;
+}
+
+.dsa5-traveller .locator-setting div {
+    border-bottom: 2px solid blue;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.dsa5-traveller .locator-setting div.active {
+    background-color: green;
+}
+
+/*Set current Location*/
+.dsa5-traveller .current-location {
+    display: grid;
+    grid-template-columns: 70px auto;
+    border-bottom: 2px solid blue;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.dsa5-traveller .current-location button {
+    display: inline;
+    width: 64px;
+    height: 64px;
+}
+
+.dsa5-traveller .icon i {
+    font-size: 3em;
+}
+
+.dsa5-traveller .current-location span {
+    border: 1px solid darkblue;
+    border-radius: 5px;
+    background-color: mediumblue;
+    color: white;
+    padding: 2px;
+}
+
+.dsa5-traveller .current-location .result div {
+    padding: 5px;
+}
+
+/*Show current Location*/
+.dsa5-traveller .current-location .result {
+    padding-top: 10px;
 }
 
 
-nav.locator button.active {
-    background-color: green;
-    font-weight: bolder;
+/*Regions*/
+.dsa5-traveller .region.head {
+    display: grid;
+    grid-template-columns: auto 170px 50px;
+}
+
+.dsa5-traveller .region button {
+    display: inline;
+    width: 48px;
+}
+
+.dsa5-traveller .region-entry {
+    width: 100%;
+    display: grid;
+    padding-top: 8px;
+    padding-left: 32px;
+    padding-right: 10px;
+    grid-template-columns: auto 170px 50px;
+    background-color: lightgrey;
+}
+
+.dsa5-traveller .region-entry:hover {
+    background-color: lightblue;
+}
+
+
+.dsa5-traveller .region-entry > div {
+    margin-left: 10px
+}
+
+.dsa5-traveller .region.index {
+    display: none;
 }
