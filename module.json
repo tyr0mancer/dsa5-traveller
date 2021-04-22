@@ -3,7 +3,7 @@
   "title": "DSA5 - Reisen",
   "description": "Erfassen und Verwalten von Regionen/Biomen und Nachtwachen",
   "author": "tyr0mancer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "minimumCoreVersion": "0.7.0",
   "compatibleCoreVersion": "0.7.9",
   "languages": [
