@@ -108,6 +108,35 @@
     {{/each}}
     <!--settings.regions-->
 
+    <div class="region head">
+        <div>
+            <a><b onclick="$('.region.index.biomes').toggle();">Biome ({{this.settings.biomes.length}})</b></a>
+        </div>
+    </div>
+    <div class="region index biomes">
+        {{#each this.settings.biomes}}
+        <div class="region-entry">
+            <div>{{name}}</div>
+            <div></div>
+            <div>
+                <button name="remove-biome" data-biome-key={{key}}><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+        {{/each}}
+        <!--index-->
+
+        <div class="region-entry">
+
+            <div></div>
+            <div><input type="text" name="new-biome-name"/></div>
+            <div>
+                <button name="add-biome"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+
+    </div>
+    <hr/>
+
     <div class="danger-zone">
         <div>
             <a><h1 onclick="$('.danger-zone-buttons.hidden').toggle();">Danger Zone</h1></a>

@@ -51,18 +51,15 @@ export class Dsa5Locations extends Application {
 
     constructor() {
         super();
-        console.clear()
         /*
                 game.settings.set(moduleName, "settings", undefined)
                 game.settings.set(moduleName, "regions", undefined)
         */
 
 
-        this._loadSettings(['general', 'regions', 'location'])
+        /* read settings */
+        this._loadSettings(['general', 'regions', 'location', 'biomes'])
 
-        /*
-            read settings
-        */
         //this.regions = Dsa5Locations.getDefaultSettings().regions //game.settings.set(moduleName, 'regions')
         //game.settings.set(moduleName, 'regions', Dsa5Locations.getDefaultSettings().regions)
 
@@ -111,23 +108,20 @@ export class Dsa5Locations extends Application {
         html.find("button[name='parse-drawing']").click(event => this._parseDrawings(event, html));
         html.find("button[name='remove-region-entry']").click(event => this.removeRegionEntry(event, html));
         html.find("button[name='update-location']").click(event => this._updateLocation());
-
-        // helper during development
+        html.find("button[name='toggle-region']").click(event => this._toggleRegion(event));
         html.find("button[name='unset-flags']").click(event => this._unsetFlags(event, html));
         html.find("button[name='reset-regions']").click(event => this._resetRegions(event, html));
+
+        html.find("button[name='add-biome']").click(event => this._addBiome(event, html));
+        html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
+
+
+        // helper during development
         html.find("button[name='show-flags']").click(event => this._showFlags(event, html));
 
-
-        html.find("button[name='toggle-region']").click(event => this._toggleRegion(event));
-
-
-        html.find("button[name='highlight-new-drawings']").click(event => this._highlightNewDrawings(event, html));
-        html.find("button[name='highlight-flagged-drawings']").click(event => this._highlightFlaggedDrawings(event, html));
-        html.find("button[name='highlight-specific-drawings']").click(event => this._highlightSpecific(event, html));
+        // todo
         html.find("button[name='add-region']").click(event => this._addRegion(event, html));
         html.find("button[name='delete-region']").click(event => this._deleteRegion(event, html));
-
-
     }
 
 
@@ -205,6 +199,37 @@ export class Dsa5Locations extends Application {
     }
 
 
+    async _removeBiome(event, html) {
+        const biomeKey = $(event.currentTarget).attr("data-biome-key")
+        this.settings.biomes = this.settings.biomes.filter(b => b.key !== biomeKey)
+        await this._saveSettings('biomes')
+        this.render()
+    }
+
+
+    /**
+     *
+     * @param event
+     * @param html
+     * @private
+     */
+    async _addBiome(event, html) {
+        const newBiomeName = html.find("input[name='new-biome-name']")[0].value
+        this.settings.biomes.push({
+            key: keyify(newBiomeName),
+            name: capitalize(newBiomeName)
+        })
+        await this._saveSettings('biomes')
+        this.render()
+    }
+
+
+    /**
+     *
+     * @param event
+     * @return {Promise<void>}
+     * @private
+     */
     async _toggleRegion(event) {
         const regionKey = $(event.currentTarget).attr("data-region-key")
         if (!regionKey) return
