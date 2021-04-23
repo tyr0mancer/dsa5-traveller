@@ -86,9 +86,6 @@ export class Dsa5Locations extends Application {
     /* collect and provide data for the template */
     async getData() {
         const status = {
-            location: this.settings.location ? Object.keys(this.settings.location).map(key => {
-                return {key, index: this.settings.location[key]}
-            }) : [],
             controlsOneToken: (canvas.tokens?.controlled.length === 1),
             viewsLocatorScene: (this.settings.general.locatorScene === canvas.scene._id),
             viewsLocatorToken: (this.settings.general.locatorToken === canvas.tokens.controlled[0]?.data._id)
@@ -106,12 +103,12 @@ export class Dsa5Locations extends Application {
         html.find("button[name='set-locator-scene']").click(event => this._setLocatorScene());
         html.find("button[name='set-locator-token']").click(event => this._setLocatorToken());
         html.find("button[name='parse-drawing']").click(event => this._parseDrawings(event, html));
-        html.find("button[name='remove-region-entry']").click(event => this.removeRegionEntry(event, html));
+        html.find("button[name='rename-region-entry']").click(event => this._renameRegionEntry(event, html));
+        html.find("button[name='remove-region-entry']").click(event => this._removeRegionEntry(event, html));
         html.find("button[name='update-location']").click(event => this._updateLocation());
         html.find("button[name='toggle-region']").click(event => this._toggleRegion(event));
         html.find("button[name='unset-flags']").click(event => this._unsetFlags(event, html));
         html.find("button[name='reset-regions']").click(event => this._resetRegions(event, html));
-
         html.find("button[name='add-biome']").click(event => this._addBiome(event, html));
         html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
 
@@ -297,13 +294,33 @@ export class Dsa5Locations extends Application {
     }
 
 
+    async _renameRegionEntry(event, html) {
+        const regionKey = $(event.currentTarget).attr("data-region-key")
+        const regionEntryKey = $(event.currentTarget).attr("data-region-entry-key")
+        const newRegionEntryName = html.find("input[data-region-id='" + regionEntryKey + "']")[0].value
+        const newRegionEntryRegion = html.find("select[data-region-id='" + regionEntryKey + "']")[0].value
+        if (newRegionEntryRegion !== regionKey) {
+            console.clear()
+            console.log('Der Eintrag zieht um')
+        }
+
+        const region = this.settings.regions.find(r => r.key === regionKey)
+        const index = region.index.find(i => i.key === regionEntryKey)
+        index.name = newRegionEntryName
+
+
+        await this._saveSettings('regions')
+        this.render()
+    }
+
+
     /**
      * removes an entry from region.index and unflags and styles drawings accordingly
      * @param event
      * @param html
      * @return {Promise<void>}
      */
-    async removeRegionEntry(event, html) {
+    async _removeRegionEntry(event, html) {
         const regionKey = $(event.currentTarget).attr("data-region-key")
         const regionEntryKey = $(event.currentTarget).attr("data-region-entry-key")
         if (!regionKey || !regionEntryKey) return
@@ -358,8 +375,17 @@ export class Dsa5Locations extends Application {
                 }
             }
         }
-        console.log(locations)
-        this.settings.location = locations
+        let newLocation = []
+        for (let regionKey of Object.keys(locations)) {
+            console.log(regionKey)
+            const region = this.settings.regions.find(r => r.key === regionKey)
+            if (!region) continue
+            newLocation.push({
+                ...region,
+                index: region.index.filter(i => locations[regionKey].includes(i.key))
+            })
+        }
+        this.settings.location = newLocation
         await this._saveSettings('location')
         this.render()
     }
@@ -431,14 +457,8 @@ export class Dsa5Locations extends Application {
      */
     static
     async updateDrawings(callback, scene = undefined) {
-        /*
-            console.clear()
-            console.log(game.scenes.active.data.drawings)
-        */
-
         if (!scene)
             scene = game.scenes.active
-
         let newDrawings = []
         const remainingDrawings = scene.data.drawings
             .filter((e) => {
@@ -452,12 +472,6 @@ export class Dsa5Locations extends Application {
         scene.update({drawings: remainingDrawings})
         for (let drawing of newDrawings)
             await Drawing.create(drawing)
-
-        /*
-            console.log(remainingDrawings)
-            console.log(newDrawings)
-        */
-
     }
 
     /**

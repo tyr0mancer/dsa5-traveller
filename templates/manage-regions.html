@@ -41,16 +41,16 @@
             <button name="update-location"><i class="far fa-compass"></i></button>
         </div>
         <div class="result">
-            {{#each status.location}}
+            {{#each settings.location}}
             <div>
-                <b>{{key}}</b>
+                <b>{{name}}</b>
                 {{#each index}}
-                <span>{{this}}</span>
+                <span>{{name}}</span>
                 {{/each}}
                 <!--index-->
             </div>
             {{/each}}
-            <!--status.location-->
+            <!--settings.location-->
         </div>
     </div>
 
@@ -77,7 +77,7 @@
     <div class="region index {{key}}">
         {{#each index}}
         <div class="region-entry">
-            <div>{{name}}</div>
+            <div><a><span onclick="$('.region-name-edit.hidden.{{key}}').toggle();">{{name}}</span></a></div>
             <div>
                 <button name="toggle-region"
                         data-show-region=true
@@ -98,6 +98,25 @@
                 <button name="remove-region-entry"
                         data-region-entry-key={{key}}
                         data-region-key={{../key}}><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="region-name-edit hidden {{key}}">
+                <input type="text" name="new-region-entry-name" data-region-id={{key}} value="{{name}}"/>
+            </div>
+            <div class="region-name-edit hidden {{key}}">
+                <select name="new-region-key" data-region-id={{key}}>
+                    {{#select ../key}}
+                    {{#each ../../settings.regions}}
+                    <option value="{{key}}">{{name}}</option>
+                    {{/each}}
+                    {{/select}}
+                    <option></option>
+                </select>
+            </div>
+
+            <div class="region-name-edit hidden {{key}}">
+                <button name="rename-region-entry"
+                        data-region-entry-key={{key}}
+                        data-region-key={{../key}}><i class="fas fa-save"></i></button>
             </div>
         </div>
         {{/each}}

@@ -113,3 +113,7 @@
     color: white;
     font-weight: bold;
 }
+
+.region-name-edit.hidden {
+    display: none;
+}
