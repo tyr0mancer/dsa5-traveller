@@ -111,6 +111,7 @@ export class Dsa5Locations extends Application {
         html.find("button[name='reset-regions']").click(event => this._resetRegions(event, html));
         html.find("button[name='add-biome']").click(event => this._addBiome(event, html));
         html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
+        html.find("select[name='update-current-biome']").change(event => this._updateCurrentBiome(event, html));
 
 
         // helper during development
@@ -195,6 +196,14 @@ export class Dsa5Locations extends Application {
         this.updateDrawings(d => console.log(d.flags))
     }
 
+
+    async _updateCurrentBiome(event, html) {
+        const key = $(event.currentTarget)[0].value
+        const name = this.settings.biomes.find(b => b.key === key).name
+        this.settings.location.biome = {key, name}
+        await this._saveSettings('location')
+        this.render()
+    }
 
     async _removeBiome(event, html) {
         const biomeKey = $(event.currentTarget).attr("data-biome-key")
@@ -386,7 +395,7 @@ export class Dsa5Locations extends Application {
                 index: region.index.filter(i => locations[regionKey].includes(i.key))
             })
         }
-        this.settings.location = newLocation
+        this.settings.location.region = newLocation
         await this._saveSettings('location')
         this.render()
     }

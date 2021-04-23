@@ -44,7 +44,7 @@
             <button name="update-location"><i class="far fa-compass"></i></button>
         </div>
         <div class="result">
-            {{#each settings.location}}
+            {{#each settings.location.region}}
             <div>
                 <b>{{name}}</b>
                 {{#each index}}
@@ -54,6 +54,16 @@
             </div>
             {{/each}}
             <!--settings.location-->
+        </div>
+        <div class="result">
+            <select name="update-current-biome">
+                {{#select settings.location.biome.key}}
+                {{#each settings.biomes}}
+                <option value="{{key}}">{{name}}</option>
+                {{/each}}
+                <!--settings.biomes-->
+                {{/select}}
+            </select>
         </div>
     </div>
 

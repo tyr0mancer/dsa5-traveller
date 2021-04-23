@@ -1,4 +1,88 @@
 <div class="content">
     <h1>Nachtwache</h1>
-    <pre>{{stringify settings.location}}</pre>
+    <div class="result">
+        {{#each settings.location}}
+        <div>
+            <b>{{name}}</b>
+            {{#each index}}
+            <span>{{name}}</span>
+            {{/each}}
+            <!--index-->
+        </div>
+        {{/each}}
+        <!--settings.location-->
+    </div>
+
+    <h1>Nachtwachen einteilen</h1>
+    <form>
+        <div>
+            <label>
+                erste Wache
+                <input/>
+            </label>
+        </div>
+        <div>
+            <label>
+                zweite Wache
+                <input/>
+            </label>
+        </div>
+        <div>
+            <label>
+                dritte Wache
+                <input/>
+            </label>
+        </div>
+    </form>
+
+    <h1>Wer schläft wo?</h1>
+    <form>
+        <h2>Spieler 1</h2>
+        <label>
+            Im Zelt
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Mit Decke / Wolldecke
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Im Schlafsack
+            <input type="checkbox"/>
+        </label>
+    </form>
+    <form>
+        <h2>Spieler 2</h2>
+        <label>
+            Im Zelt
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Mit Decke / Wolldecke
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Im Schlafsack
+            <input type="checkbox"/>
+        </label>
+    </form>
+
+    <form>
+        <h2>Spieler 3</h2>
+        <label>
+            Im Zelt
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Mit Decke / Wolldecke
+            <input type="checkbox"/>
+        </label>
+        <label>
+            Im Schlafsack
+            <input type="checkbox"/>
+        </label>
+    </form>
+
+    <button>gute Nacht!</button>
+
 </div>
