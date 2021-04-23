@@ -1,4 +1,6 @@
 <section class="dsa5-traveller locator content">
+
+    <!--set / display lcoator Token and - Scene-->
     <div class="locator-setting">
         {{#if status.viewsLocatorScene}}
         <div class="scene active">
@@ -36,6 +38,7 @@
         <!--controlsOneToken-->
     </div>
 
+    <!-- show / update current location and set biome -->
     <div class="current-location">
         <div class="icon">
             <button name="update-location"><i class="far fa-compass"></i></button>
@@ -54,6 +57,7 @@
         </div>
     </div>
 
+    <!-- all region types and their region entries -->
     {{#each settings.regions}}
     <div class="region head">
         <div>
@@ -127,6 +131,7 @@
     {{/each}}
     <!--settings.regions-->
 
+    <!-- all biomes -->
     <div class="region head">
         <div>
             <a><b onclick="$('.region.index.biomes').toggle();">Biome ({{this.settings.biomes.length}})</b></a>
