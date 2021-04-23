@@ -168,7 +168,7 @@ export class Dsa5Locations extends Application {
      * @private
      */
     _unsetFlags() {
-        Dsa5Locations.updateDrawings(drawing => {
+        this.updateDrawings(drawing => {
             /*
                 const oldText = drawing.text.split(',');
                 drawing.text = capitalize(oldText[oldText.length - 1])
@@ -192,7 +192,7 @@ export class Dsa5Locations extends Application {
     }
 
     _showFlags(event, html) {
-        Dsa5Locations.updateDrawings(d => console.log(d.flags))
+        this.updateDrawings(d => console.log(d.flags))
     }
 
 
@@ -235,7 +235,7 @@ export class Dsa5Locations extends Application {
         const showDrawing = $(event.currentTarget).attr("data-show-region")
         const toggleVisibility = (showDrawing === undefined)
         const hidden = !(showDrawing === "true")
-        await Dsa5Locations.updateDrawings(drawing => {
+        await this.updateDrawings(drawing => {
             if (!drawing.flags || !drawing.flags[moduleName]) return undefined // no flags
             if (!drawing.flags[moduleName][regionKey]) return undefined // flagged with another regionKey
             if (regionId && (drawing.flags[moduleName][regionKey] !== regionId)) return undefined // wrong regionId
@@ -257,7 +257,7 @@ export class Dsa5Locations extends Application {
         const regionKey = $(event.currentTarget).attr("data-region-key")
         if (!regionKey) return
         if (!this.settings.regions.find(r => r.key === regionKey)) return
-        await Dsa5Locations.updateDrawings(drawing => {
+        await this.updateDrawings(drawing => {
             // this is not a new drawing
             if (drawing.flags && drawing.flags[moduleName]) {
                 return undefined
@@ -325,7 +325,7 @@ export class Dsa5Locations extends Application {
         const regionEntryKey = $(event.currentTarget).attr("data-region-entry-key")
         if (!regionKey || !regionEntryKey) return
         if (!this.settings.regions.find(r => r.key === regionKey)) return
-        await Dsa5Locations.updateDrawings(drawing => {
+        await this.updateDrawings(drawing => {
             if (!drawing.flags || !drawing.flags[moduleName]) return undefined      // a new drawing
             if (!drawing.flags[moduleName][regionKey]) return undefined     // flagged with another region type
             if (regionEntryKey !== drawing.flags[moduleName][regionKey]) return undefined   // different region entry
@@ -346,15 +346,10 @@ export class Dsa5Locations extends Application {
         if (!scene && this.settings.general.locatorScene._id) {
             scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
         }
-        console.log(scene)
-        console.log(this.settings.general.locatorScene._id)
-
         if (!scene)
             scene = game.scenes.active
-
         if (!token)
             token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
-
         if (!token) {
             ui.notifications.error(`locator token unavailable`);
             return Error(`locator token unavailable`)
@@ -396,21 +391,6 @@ export class Dsa5Locations extends Application {
         this.render()
     }
 
-
-    async _highlightNewDrawings(event, html) {
-        await Dsa5Locations.updateDrawings(drawing => {
-            return mergeObject(drawing, this.getDrawingStyle('muster'))
-        })
-    }
-
-    _highlightFlaggedDrawings(event, html) {
-        alert('highlight!')
-        console.log(JSON.stringify(game.scenes.active.data.drawings))
-    }
-
-    _highlightSpecific(event, html) {
-
-    }
 
     _addRegion(event, html) {
 
@@ -461,8 +441,10 @@ export class Dsa5Locations extends Application {
      * @param scene
      * @return {Promise<void>}
      */
-    static
     async updateDrawings(callback, scene = undefined) {
+        if (!scene && this.settings.general.locatorScene._id) {
+            scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
+        }
         if (!scene)
             scene = game.scenes.active
         let newDrawings = []
@@ -475,9 +457,13 @@ export class Dsa5Locations extends Application {
                 }
                 return true
             })
-        scene.update({drawings: remainingDrawings})
-        for (let drawing of newDrawings)
-            await Drawing.create(drawing)
+
+        if (scene._id === game.scenes.viewed._id) {
+            scene.update({drawings: remainingDrawings})
+            for (let drawing of newDrawings)
+                await Drawing.create(drawing)
+        } else
+            scene.update({drawings: remainingDrawings.concat(newDrawings)})
     }
 
     /**
