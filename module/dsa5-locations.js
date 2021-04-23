@@ -87,8 +87,8 @@ export class Dsa5Locations extends Application {
     async getData() {
         const status = {
             controlsOneToken: (canvas.tokens?.controlled.length === 1),
-            viewsLocatorScene: (this.settings.general.locatorScene === canvas.scene._id),
-            viewsLocatorToken: (this.settings.general.locatorToken === canvas.tokens.controlled[0]?.data._id)
+            viewsLocatorScene: (this.settings.general.locatorScene._id === canvas.scene._id),
+            viewsLocatorToken: (this.settings.general.locatorToken._id === canvas.tokens.controlled[0]?.data._id)
         }
 
         return mergeObject(super.getData(), {
@@ -130,8 +130,8 @@ export class Dsa5Locations extends Application {
     _setLocatorScene(scene) {
         if (!scene)
             scene = canvas.scene
-        this.settings.general.locatorScene = scene._id
-        this.settings.general.locatorSceneName = scene.data.name
+        this.settings.general.locatorScene._id = scene._id
+        this.settings.general.locatorScene.name = scene.data.name
         this._saveSettings()
         this.render()
     }
@@ -147,8 +147,8 @@ export class Dsa5Locations extends Application {
         if (!token)
             token = canvas.tokens.controlled[0]
         if (!token) return
-        this.settings.general.locatorToken = token.data._id
-        this.settings.general.locatorTokenName = token.data.name
+        this.settings.general.locatorToken._id = token.data._id
+        this.settings.general.locatorToken.name = token.data.name
         this._saveSettings()
         this.render()
     }
@@ -343,11 +343,17 @@ export class Dsa5Locations extends Application {
 
 
     async _updateLocation(scene, token) {
+        if (!scene && this.settings.general.locatorScene._id) {
+            scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
+        }
+        console.log(scene)
+        console.log(this.settings.general.locatorScene._id)
+
         if (!scene)
             scene = game.scenes.active
 
         if (!token)
-            token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken)
+            token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
 
         if (!token) {
             ui.notifications.error(`locator token unavailable`);
@@ -486,20 +492,16 @@ export class Dsa5Locations extends Application {
                 {key: "politik", name: "Politisch", index: []}
             ],
             biomes: [
+                {key: 'steppe', name: 'Steppe'},
                 {key: 'wald', name: 'Wald'},
-                {key: 'Regenwald', name: 'Regenwald'},
-                {key: 'Wüste', name: 'Wüste'},
-                {key: 'Stadt', name: 'Stadt'},
-                {key: 'Metropole', name: 'Metropole'},
-                {key: 'Dorf', name: 'Dorf'},
-                {key: 'Hauptstraße', name: 'Hauptstraße'}
+                {key: 'regenwald', name: 'Regenwald'},
+                {key: 'wueste', name: 'Wüste'},
+                {key: 'gebirge', name: 'Gebirge'},
             ],
             location: null,
             general: {
-                locatorScene: null,
-                locatorSceneName: null,
-                locatorToken: null,
-                locatorTokenName: null,
+                locatorScene: {},
+                locatorToken: {}
             }
         }
     }
