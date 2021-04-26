@@ -112,6 +112,7 @@ export class Dsa5Locations extends Application {
         html.find("button[name='add-biome']").click(event => this._addBiome(event, html));
         html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
         html.find("select[name='update-current-biome']").change(event => this._updateCurrentBiome(event, html));
+        html.find("button[name='view-scene']").click(event => this._viewLocatorScene(event, html));
 
 
         // helper during development
@@ -509,6 +510,10 @@ export class Dsa5Locations extends Application {
         }
     }
 
+    _viewLocatorScene(event, html) {
+        const scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
+        scene.view()
+    }
 }
 
 
