@@ -309,8 +309,8 @@ export class Dsa5Locations extends Application {
         const newRegionEntryName = html.find("input[data-region-id='" + regionEntryKey + "']")[0].value
         const newRegionEntryRegion = html.find("select[data-region-id='" + regionEntryKey + "']")[0].value
         if (newRegionEntryRegion !== regionKey) {
-            console.clear()
-            console.log('Der Eintrag zieht um')
+            //todo eintrag umziehen
+            //console.log('Der Eintrag zieht um')
         }
 
         const region = this.settings.regions.find(r => r.key === regionKey)
@@ -350,24 +350,15 @@ export class Dsa5Locations extends Application {
         this.render()
     }
 
-
-    async _updateLocation(scene, token) {
-        if (!scene && this.settings.general.locatorScene._id) {
-            scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
-        }
-        if (!scene)
-            scene = game.scenes.active
-        if (!token)
-            token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
-        if (!token) {
-            ui.notifications.error(`locator token unavailable`);
-            return Error(`locator token unavailable`)
-        }
+    static async updateLocation(scene, token, location = undefined, regions = undefined) {
+        if (location === undefined)
+            location = game.settings.get(moduleName, 'location')
+        if (regions === undefined)
+            regions = game.settings.get(moduleName, 'regions')
 
         const gridSize = scene.data.grid
         const tokenX = token.x + (0.5 * gridSize)
         const tokenY = token.y + (0.5 * gridSize)
-
         let locations = {}
         for (let drawing of scene.data.drawings) {
             let points = [];
@@ -385,18 +376,35 @@ export class Dsa5Locations extends Application {
                 }
             }
         }
-        let newLocation = []
+        let result = []
         for (let regionKey of Object.keys(locations)) {
-            console.log(regionKey)
-            const region = this.settings.regions.find(r => r.key === regionKey)
+            const region = regions.find(r => r.key === regionKey)
             if (!region) continue
-            newLocation.push({
+            result.push({
                 ...region,
                 index: region.index.filter(i => locations[regionKey].includes(i.key))
             })
         }
-        this.settings.location.region = newLocation
-        await this._saveSettings('location')
+        location.region = result
+        await game.settings.set(moduleName, 'location', location)
+        return location
+    }
+
+
+    async _updateLocation(scene, token) {
+        if (!scene && this.settings.general.locatorScene._id) {
+            scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
+        }
+        if (!scene)
+            scene = game.scenes.active
+        if (!token)
+            token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
+        if (!token) {
+            ui.notifications.error(`locator token unavailable`);
+            return Error(`locator token unavailable`)
+        }
+
+        this.settings.location = await Dsa5Locations.updateLocation(scene, token, this.settings.location, this.settings.regions)
         this.render()
     }
 

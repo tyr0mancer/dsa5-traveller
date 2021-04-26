@@ -4,6 +4,18 @@ import {Dsa5Nightwatch} from "./module/dsa5-nightwatch.js";
 export const moduleName = "dsa5-traveller";
 export const meistertoolsModuleName = 'dsa5-meistertools'
 
+
+Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
+    const tokenId = game.settings.get(moduleName, "general").locatorToken._id
+    if (delta.x || delta.y) {
+        if (tokenId === token._id) {
+            token.x = delta.x || token.x
+            token.y = delta.y || token.y
+            await Dsa5Locations.updateLocation(scene,token)
+        }
+    }
+});
+
 Hooks.once('init', () => {
     console.log(moduleName, "| Initializing")
     registerSettings()

@@ -1,5 +1,37 @@
 <div class="content">
+
+    {{#each tokens}}
+    <section style="display: grid; grid-template-columns: 64px auto auto auto 48px 48px 48px 48px">
+        <div><img src="{{img}}"/></div>
+        <button name="make-fire" data-token-id="{{_id}}"><i class="fas fa-fire"></i></button>
+        <button name="go-hunting" data-token-id="{{_id}}"><i class="fas fa-paw"></i></button>
+        <button name="find-herbs" data-token-id="{{_id}}"><i class="fas fa-leaf"></i></button>
+        <button name="place-tile" data-token-id="{{_id}}" data-token-tile="zelt"><img
+                src="modules/dsa5-core/icons/equipment/Zelt1Person.webp"/></button>
+        <button name="place-tile" data-token-id="{{_id}}"data-token-tile="schlafsack"><img
+                src="modules/dsa5-core/icons/equipment/Schlafsack.webp"/></button>
+    </section>
+    <hr/>
+    {{/each}}
+    <!--tokens-->
+
+    <section style="display: grid; grid-template-columns: auto auto auto auto auto ">
+        <button name="request-roll" data-roll-target="Wildnisleben" data-roll-mod="1"><img
+                src="modules/dsa5-core/icons/equipment/Schlafsack.webp"/></button>
+    </section>
+    <hr/>
+    .
+    <hr/>
+    .
+    <hr/>
+
     <h1>Nachtwache</h1>
+    <select>
+        {{#each tokens}}
+        <option>{{name}}</option>
+        {{/each}}
+    </select>
+
     <div class="result">
         {{#each settings.location.region}}
         <div>
