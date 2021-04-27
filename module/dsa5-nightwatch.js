@@ -19,7 +19,7 @@ export class Dsa5Nightwatch extends Application {
         options.top = 50;
         options.left = 100;
         options.width = 400;
-        options.height = 600;
+        options.height = 900;
         return options;
     }
 
@@ -71,12 +71,15 @@ export class Dsa5Nightwatch extends Application {
     }
 
 
-    _requestRoll(modifier = 1, target = 'Wildnisleben') {
+    _requestRoll(event) {
+        const modifier = parseInt($(event.currentTarget).attr("data-roll-mod"))
+        const target = $(event.currentTarget).attr("data-roll-target")
+        let reason = $(event.currentTarget).attr("data-roll-reason")
+
         const mod = modifier < 0 ? ` ${modifier}` : (modifier > 0 ? ` +${modifier}` : "")
-        const msg = game.i18n.format("CHATNOTIFICATION.requestRoll", {
-            user: game.user.name,
-            item: `<a class="roll-button request-roll" data-type="skill" data-modifier="${modifier}" data-name="${target}"><i class="fas fa-dice"></i> ${target}${mod}</a>`
-        })
+        let msg = `<a class="roll-button request-roll" data-type="skill" data-modifier="${modifier}" data-name="${target}"><i class="fas fa-dice"></i> ${target}${mod}</a>`
+        if (reason)
+            msg += ` - <b>${reason}</b>`
         ChatMessage.create({content: msg});
     }
 
