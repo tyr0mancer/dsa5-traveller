@@ -31,7 +31,7 @@ export class Dsa5Nightwatch extends Application {
         }
         return mergeObject(super.getData(), {
             settings: this.settings,
-            tokens: game.scenes.active.data.tokens,
+            tokens: game.scenes.active?.data.tokens,
             status,
         })
     }
