@@ -47,7 +47,7 @@ const DRAWING_FORMATS = {
     },
 }
 
-export class Dsa5Locations extends Application {
+export class LocationManager extends Application {
 
     constructor() {
         super();
@@ -60,8 +60,8 @@ export class Dsa5Locations extends Application {
         /* read settings */
         this._loadSettings(['general', 'regions', 'location', 'biomes'])
 
-        //this.regions = Dsa5Locations.getDefaultSettings().regions //game.settings.set(moduleName, 'regions')
-        //game.settings.set(moduleName, 'regions', Dsa5Locations.getDefaultSettings().regions)
+        //this.regions = LocationManager.getDefaultSettings().regions //game.settings.set(moduleName, 'regions')
+        //game.settings.set(moduleName, 'regions', LocationManager.getDefaultSettings().regions)
 
         Hooks.on("canvasInit", () => this.render());
         Hooks.on("controlToken", () => this.render());
@@ -72,7 +72,7 @@ export class Dsa5Locations extends Application {
         const options = super.defaultOptions;
         options.title = `Regionen verwalten`;
         options.id = `${moduleName}.manage-regions`;
-        options.template = `modules/${moduleName}/templates/manage-regions.html`;
+        options.template = `modules/${moduleName}/templates/location-manager.html`;
         options.tabs = [{navSelector: ".tabs", contentSelector: ".content"}]
         options.resizable = true;
         options.top = 50;
@@ -405,7 +405,7 @@ export class Dsa5Locations extends Application {
             return Error(`locator token unavailable`)
         }
 
-        this.settings.location = await Dsa5Locations.updateLocation(scene, token, this.settings.location, this.settings.regions)
+        this.settings.location = await LocationManager.updateLocation(scene, token, this.settings.location, this.settings.regions)
         this.render()
     }
 

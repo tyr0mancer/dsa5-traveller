@@ -1,5 +1,5 @@
-import {Dsa5Locations} from "./module/dsa5-locations.js";
-import {Dsa5Nightwatch} from "./module/dsa5-nightwatch.js";
+import {LocationManager} from "./module/location-manager.js";
+import {ItemManager} from "./module/item-manager.js";
 
 export const moduleName = "dsa5-traveller";
 export const meistertoolsModuleName = 'dsa5-meistertools'
@@ -11,7 +11,7 @@ Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
         if (tokenId === token._id) {
             token.x = delta.x || token.x
             token.y = delta.y || token.y
-            await Dsa5Locations.updateLocation(scene,token)
+            await LocationManager.updateLocation(scene,token)
         }
     }
 });
@@ -27,31 +27,32 @@ Hooks.once('ready', function () {
 
 Hooks.on("getSceneControlButtons", (controls) => {
     const meisterPanel = controls.find(c => (c.name === meistertoolsModuleName))
-    if (game.user.isGM)
+    if (!meisterPanel) return
+    if (game.user.isGM) {
         meisterPanel['tools'].push({
             name: "locator",
             title: 'Locator',
             icon: "fas fa-street-view",
             visible: true,
             button: true,
-            onClick: () => new Dsa5Locations().render(true)
+            onClick: () => new LocationManager().render(true)
         })
-    meisterPanel['tools'].push({
-        name: "nightwatch",
-        title: 'Nachtwache',
-        icon: "fas fa-campground",
-        visible: true,
-        button: true,
-        onClick: () => new Dsa5Nightwatch().render(true)
-    })
-
+        meisterPanel['tools'].push({
+            name: "item-manager",
+            title: 'Locations in Items verwalten',
+            icon: "fas fa-tags",
+            visible: true,
+            button: true,
+            onClick: () => new ItemManager().render(true)
+        })
+    }
     controls = controls.filter(c => (c.name !== meistertoolsModuleName))
     controls.push(meisterPanel)
 });
 
 
 function registerSettings() {
-    const defaultSettings = Dsa5Locations.getDefaultSettings()
+    const defaultSettings = LocationManager.getDefaultSettings()
 
     game.settings.register(moduleName, "general", {
         scope: "world",
