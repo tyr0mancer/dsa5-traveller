@@ -152,7 +152,7 @@
                 {{#each itemsLeft}}
                 <tr class="update-location apply-tag" data-item-id="{{_id}}">
                     <td><img src="{{img}}" style="height:64px"/></td>
-                    <td><h2>{{name}}</h2></td>
+                    <td><h3>{{name}}</h3></td>
                     <!--
                                 <td>{{{data.data.description.value}}}</td>
                     -->
@@ -200,16 +200,16 @@
                                 <td>{{{data.data.description.value}}}</td>
                     -->
                     <td>
-                        1<pre>{{data.availability.general}}</pre>
-                        2<pre>{{data.data.availability.general}}</pre>
+                        <pre>{{data.availability.general}}</pre>
+                        <pre>{{data.data.availability.general}}</pre>
                     </td>
                     <td>
-                        1<pre>{{{locationToString data.availability.regions}}}</pre>
-                        2<pre>{{{locationToString data.data.availability.regions}}}</pre>
+                        <pre>{{{locationToString data.availability.regions}}}</pre>
+                        <pre>{{{locationToString data.data.availability.regions}}}</pre>
                     </td>
                     <td>
-                        1<pre>{{{locationToString data.availability.biomes}}}</pre>
-                        2<pre>{{{locationToString data.data.availability.biomes}}}</pre>
+                        <pre>{{{locationToString data.availability.biomes}}}</pre>
+                        <pre>{{{locationToString data.data.availability.biomes}}}</pre>
                     </td>
                 </tr>
                 {{/each}}

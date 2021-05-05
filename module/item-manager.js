@@ -108,7 +108,6 @@ export class ItemManager extends Application {
     }
 
     async _applyTag(event) {
-        console.clear()
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
         let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
@@ -128,8 +127,13 @@ export class ItemManager extends Application {
                     if (value) biomes.push([value, parseInt(k.substr(5))])
             }
         }
-        await item.update({"data.availability": {general, regions, biomes}})
-        console.log({"data.availability": {general, regions, biomes}})
+        // local item
+        if (item.data.data?.availability) {
+            await item.update({"data.availability": {general, regions, biomes}})
+        } else {
+            item.data.availability = {general, regions, biomes}
+            await this.currentPack.updateEntity(item);
+        }
         await this._applyFilter()
     }
 }
