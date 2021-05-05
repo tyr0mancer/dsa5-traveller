@@ -150,8 +150,8 @@
                 </tr>
 
                 {{#each itemsLeft}}
-                <tr class="update-location apply-tag" data-item-id="{{_id}}">
-                    <td><img src="{{img}}" style="height:64px"/></td>
+                <tr>
+                    <td><img src="{{img}}" style="height:32px"/></td>
                     <td><h3>{{name}}</h3></td>
                     <!--
                                 <td>{{{data.data.description.value}}}</td>
@@ -191,10 +191,12 @@
 
                 {{#each itemsRight}}
                 <tr class="update-location apply-tag" data-item-id="{{_id}}">
-                    <td><img src="{{img}}" style="height:64px"/></td>
+                    <td><img src="{{img}}" style="height:48px"/></td>
                     <td>
                         <h3>{{name}}</h3>
+<!--
                         <p>{{stringify data.location}}</p>
+-->
                     </td>
                     <!--
                                 <td>{{{data.data.description.value}}}</td>

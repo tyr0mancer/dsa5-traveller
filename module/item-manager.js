@@ -77,7 +77,7 @@ export class ItemManager extends Application {
                 if (this.filter.omit_biomes && availability?.biomes?.length) return false
                 if (this.filter.omit_regions && availability?.regions?.length) return false
                 if (this.filter.region) {
-                    return (availability?.regions.find(e => e[0] === this.filter.region))
+                    return (availability?.regions.find(e => e[0].toLowerCase().includes(this.filter.region.toLowerCase())))
                 }
                 if (this.filter.biome)
                     return (availability?.biomes.find(e => e[0] === this.filter.biome))
