@@ -2,111 +2,54 @@
 
     <h1>Item Manager</h1>
 
-    <div class="col-2">
-        <div>
-            <section class="round-box">
-                <header>
-                    <h2>Datenquelle wählen</h2>
-                </header>
-                <div class="select-css">
-                    <select id="select-item-pack" name="select-pack">
-                        {{#select currentPack.collection}}
-                        <option value="">-&#45;&#45;</option>
-                        {{#each itemCompendiaOptions}}
-                        <option value="{{collection}}">{{metadata.label}} ({{collection}})</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <label for="select-item-pack">Aus Kompendium wählen</label>
-                </div>
+    <div class="col-3" style="grid-template-columns: auto auto 300px;">
 
-                <div class="select-css">
-                    <select id="select-item-folder" name="select-folder">
-                        {{#select currentFolder._id}}
-                        <option value="">---</option>
-                        {{#each itemFolderOptions}}
-                        <option value="{{_id}}">{{name}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <label for="select-item-folder">Lokale Ordner</label>
-                </div>
-                <div class="switch-checkbox">
-                    <input id="hide-filtered" name="hide-filtered" type="checkbox" {{checked hideFiltered}}/>
-                    <label for="hide-filtered">Gefilterte Auswahl aus Hauptansicht entfernen</label>
-                </div>
+        <!-- ---------------------
+        Row 1 / Col 1
+        Datenquelle
+        --------------------- -->
+        <section class="round-box">
+            <header>
+                <h2>Datenquelle wählen</h2>
+            </header>
+            <div class="select-css">
+                <select id="select-item-pack" name="select-pack">
+                    {{#select currentPack.collection}}
+                    <option value="">-&#45;&#45;</option>
+                    {{#each itemCompendiaOptions}}
+                    <option value="{{collection}}">{{metadata.label}} ({{collection}})</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+                <label for="select-item-pack">Aus Kompendium wählen</label>
+            </div>
+            <div class="select-css">
+                <select id="select-item-folder" name="select-folder">
+                    {{#select currentFolder._id}}
+                    <option value="">---</option>
+                    {{#each itemFolderOptions}}
+                    <option value="{{_id}}">{{name}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+                <label for="select-item-folder">Lokale Ordner</label>
+            </div>
+            <div class="switch-checkbox">
+                <input id="hide-filtered" name="hide-filtered" type="checkbox" {{checked hideFiltered}}/>
+                <label for="hide-filtered">Gefilterte Auswahl aus Hauptansicht entfernen</label>
+            </div>
+        </section>
 
-            </section>
-        </div>
 
-        <div>
-            <section class="round-box with-help">
-                <header>
-                    <h2>Filter wählen</h2>
-                    <nav class="help-icon" data-help="filter"><i class="fas fa-tag"></i></nav>
-                </header>
-                <section class="help-info help-filter">
-
-                    <div class="switch-checkbox">
-                        <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked
-                               tag.overwrite}}/>
-                        <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
-                    </div>
-                    <div class="select-css">
-                        <select id="select-general-availability" name="general" class="tag">
-                            {{#select tag.general}}
-                            <option></option>
-                            <option value="5">sehr häufig</option>
-                            <option value="4">häufig</option>
-                            <option value="3">normal</option>
-                            <option value="2">selten</option>
-                            <option value="1">fast nie</option>
-                            <option value="0">nie verfügbar</option>
-                            {{/select}}
-                        </select>
-                        <label for="select-general-availability">Allgemeine Verfügbarkeit</label>
-                    </div>
-
-                    <table>
-                        <tr>
-                            <th>Verfügbarkeit</th>
-                            <th>Regionen</th>
-                            <th>Landschafts-<br/>Typen</th>
-                        </tr>
-                        <tr>
-                            <td>sehr häufig</td>
-                            <td><input name="region5" class="tag" value="{{tag.region5}}" type="text"/></td>
-                            <td><input name="biome5" class="tag" value="{{tag.biome5}}" type="text"/></td>
-                        </tr>
-                        <tr>
-                            <td>häufig</td>
-                            <td><input name="region4" class="tag" value="{{tag.region4}}" type="text"/></td>
-                            <td><input name="biome4" class="tag" value="{{tag.biome4}}" type="text"/></td>
-                        </tr>
-                        <tr>
-                            <td>normal</td>
-                            <td><input name="region4" class="tag" value="{{tag.region3}}" type="text"/></td>
-                            <td><input name="biome4" class="tag" value="{{tag.biome3}}" type="text"/></td>
-                        </tr>
-                        <tr>
-                            <td>selten</td>
-                            <td><input name="region4" class="tag" value="{{tag.region2}}" type="text"/></td>
-                            <td><input name="biome4" class="tag" value="{{tag.biome2}}" type="text"/></td>
-                        </tr>
-                        <tr>
-                            <td>fast nie</td>
-                            <td><input name="region4" class="tag" value="{{tag.region1}}" type="text"/></td>
-                            <td><input name="biome4" class="tag" value="{{tag.biome1}}" type="text"/></td>
-                        </tr>
-                        <tr>
-                            <td>nie verfügbar</td>
-                            <td><input name="region4" class="tag" value="{{tag.region0}}" type="text"/></td>
-                            <td><input name="biome4" class="tag" value="{{tag.biome0}}" type="text"/></td>
-                        </tr>
-                    </table>
-
-                </section>
-
+        <!-- ---------------------
+        Row 1 / Col 2
+        Filter
+        --------------------- -->
+        <section class="round-box">
+            <header>
+                <h2>Filter wählen</h2>
+            </header>
+            <main>
                 <div class="switch-checkbox">
                     <input id="omit-general-availability" name="omit_general" class="filter" type="checkbox" {{checked
                            filter.omit_general}}/>
@@ -131,10 +74,83 @@
                 <hr/>
                 <button type="button" name="filter-apply">Filter anwenden</button>
                 <button type="button" name="filter-reset" class="reset">Filter zurück setzen</button>
+            </main>
+        </section>
 
-            </section>
-        </div>
 
+        <!-- ---------------------
+        Row 1 / Col 3
+        Tag
+        --------------------- -->
+        <section class="round-box"  style="grid-row: span 2">
+            <header>
+                <h2>Label</h2>
+            </header>
+            <main>
+                <div class="switch-checkbox">
+                    <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked
+                           tag.overwrite}}/>
+                    <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
+                </div>
+                <div class="select-css">
+                    <select id="select-general-availability" name="general" class="tag">
+                        {{#select tag.general}}
+                        <option></option>
+                        <option value="5">sehr häufig</option>
+                        <option value="4">häufig</option>
+                        <option value="3">normal</option>
+                        <option value="2">selten</option>
+                        <option value="1">fast nie</option>
+                        <option value="0">nie verfügbar</option>
+                        {{/select}}
+                    </select>
+                    <label for="select-general-availability">Allgemeine Verfügbarkeit</label>
+                </div>
+                <table>
+                    <tr>
+                        <th>Verfügbarkeit</th>
+                        <th>Regionen</th>
+                        <th>Landschafts-<br/>Typen</th>
+                    </tr>
+                    <tr>
+                        <td>sehr häufig</td>
+                        <td><input name="region5" class="tag" value="{{tag.region5}}" type="text"/></td>
+                        <td><input name="biome5" class="tag" value="{{tag.biome5}}" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>häufig</td>
+                        <td><input name="region4" class="tag" value="{{tag.region4}}" type="text"/></td>
+                        <td><input name="biome4" class="tag" value="{{tag.biome4}}" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>normal</td>
+                        <td><input name="region4" class="tag" value="{{tag.region3}}" type="text"/></td>
+                        <td><input name="biome4" class="tag" value="{{tag.biome3}}" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>selten</td>
+                        <td><input name="region4" class="tag" value="{{tag.region2}}" type="text"/></td>
+                        <td><input name="biome4" class="tag" value="{{tag.biome2}}" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>fast nie</td>
+                        <td><input name="region4" class="tag" value="{{tag.region1}}" type="text"/></td>
+                        <td><input name="biome4" class="tag" value="{{tag.biome1}}" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td>nie verfügbar</td>
+                        <td><input name="region4" class="tag" value="{{tag.region0}}" type="text"/></td>
+                        <td><input name="biome4" class="tag" value="{{tag.biome0}}" type="text"/></td>
+                    </tr>
+                </table>
+            </main>
+        </section>
+
+
+        <!-- ---------------------
+        Row 2 / Col 1
+        Alle Items aus Pack / Ordner
+        --------------------- -->
         <div>
             <h1>Alle Items:</h1>
             <table>
@@ -174,8 +190,14 @@
 
             </table>
         </div>
-        <div>
 
+
+
+        <!-- ---------------------
+        Row 2 / Col 2
+        Gefilterte Auswahl
+        --------------------- -->
+        <div>
             <h1>Gefilterte Auswahl:</h1>
             <table>
                 <tr>
@@ -194,9 +216,9 @@
                     <td><img src="{{img}}" style="height:48px"/></td>
                     <td>
                         <h3>{{name}}</h3>
-<!--
-                        <p>{{stringify data.location}}</p>
--->
+                        <!--
+                                                <p>{{stringify data.location}}</p>
+                        -->
                     </td>
                     <!--
                                 <td>{{{data.data.description.value}}}</td>
