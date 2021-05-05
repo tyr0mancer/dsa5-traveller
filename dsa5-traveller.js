@@ -11,7 +11,7 @@ Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
         if (tokenId === token._id) {
             token.x = delta.x || token.x
             token.y = delta.y || token.y
-            await LocationManager.updateLocation(scene,token)
+            await LocationManager.updateLocation(scene, token)
         }
     }
 });
@@ -19,6 +19,15 @@ Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
 Hooks.once('init', () => {
     console.log(moduleName, "| Initializing")
     registerSettings()
+
+    Handlebars.registerHelper('locationToString', function (location, opts) {
+        let result = ""
+        if (location && Array.isArray(location))
+            for (let entry of location.sort((a, b) => b[1] - a[1]))
+                result += `<p><b>${entry[1]}</b> <i>${entry[0]}</i></p>`
+        return result
+    });
+
 });
 
 Hooks.once('ready', function () {
