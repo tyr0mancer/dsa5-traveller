@@ -66,6 +66,13 @@ export class ItemManager extends Application {
                 if (!this.filter || !Object.keys(this.filter).length)
                     return false
                 let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
+                /*
+                    // temporary hack to migrate from old format
+                    if (this.filter.omit_general) {
+                        if (item.data.location) return true
+                        return false
+                    }
+                */
                 if (this.filter.omit_general && availability?.general) return false
                 if (this.filter.omit_biomes && availability?.biomes?.length) return false
                 if (this.filter.omit_regions && availability?.regions?.length) return false
@@ -131,6 +138,31 @@ export class ItemManager extends Application {
         if (item.data.data?.availability) {
             await item.update({"data.availability": {general, regions, biomes}})
         } else {
+            /*
+                // temporary hack to migrate from old format
+                if (item.data.location) {
+                    regions = []
+                    biomes = []
+                    for (let weight = 1; weight <= 5; weight++) {
+                        let regionString = item.data.location['rarity' + weight]?.region.value || ''
+                        for (let region of regionString?.split(','))
+                            if (region) {
+                                if (region === 'sonst')
+                                    general = weight
+                                else
+                                    regions.push([region, weight])
+                            }
+
+                        let biomeString = item.data.location['rarity' + weight]?.biome.value || ''
+                        for (let biome of biomeString?.split(','))
+                            if (biome)
+                                biomes.push([biome, weight])
+                    }
+                    delete item.data.location
+                    delete item.data.data
+                }
+            */
+
             item.data.availability = {general, regions, biomes}
             await this.currentPack.updateEntity(item);
         }
