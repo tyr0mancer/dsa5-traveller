@@ -8,7 +8,7 @@ export class ItemManager extends Application {
         this.currentPack = undefined
 
         this.itemFolderOptions = game.folders.filter(f => (f.data.type === "Item"));
-        this.showFiltered = true
+        this.hideFiltered = false
         this.filter = {}
         this.tag = {}
     }
@@ -35,7 +35,7 @@ export class ItemManager extends Application {
 
             itemFolderOptions: this.itemFolderOptions,
             currentFolder: this.currentFolder,
-            showFiltered: this.showFiltered,
+            hideFiltered: this.hideFiltered,
             filter: this.filter,
             tag: this.tag,
 
@@ -51,8 +51,8 @@ export class ItemManager extends Application {
         html.find("button[name=filter-apply]").click(() => this._applyFilter())
         html.find("button[name=filter-reset]").click(() => this._resetFilter())
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
-        html.find("input[name=show-filtered]").change(event => {
-            this.showFiltered = event.currentTarget.checked === true
+        html.find("input[name=hide-filtered]").change(event => {
+            this.hideFiltered = event.currentTarget.checked === true
             this._applyFilter()
         })
         html.find("input.filter[type=text]").change((event) => this.filter[event.currentTarget.name] = event.currentTarget.value)
@@ -65,31 +65,37 @@ export class ItemManager extends Application {
 
 
     async _applyFilter() {
-        console.clear()
         this.filteredIndex = this.currentFolder?.content.filter(item => {
-            let availability = item.data.data.availability
-            if (this.filter.omit_general && availability?.general) return false
-            if (this.filter.omit_biomes && availability?.biomes?.length) return false
-            if (this.filter.omit_regions && availability?.regions?.length) return false
+                if (!this.filter || !Object.keys(this.filter).length)
+                    return false
+                console.log(this.filter)
 
-            if (this.filter.region) {
-                console.log(this.filter.region)
-                console.log(availability)
-                return (availability === undefined || availability.regions.find(e => e[0] === this.filter.region))
+                let availability = item.data.data.availability
+                if (this.filter.omit_general && availability?.general) return false
+                if (this.filter.omit_biomes && availability?.biomes?.length) return false
+                if (this.filter.omit_regions && availability?.regions?.length) return false
+
+                if (this.filter.region) {
+                    console.log(this.filter.region)
+                    console.log(availability)
+                    return (availability === undefined || availability.regions.find(e => e[0] === this.filter.region))
+                }
+                if (this.filter.biome) {
+                    return availability !== undefined
+                }
+
+                return true
             }
-            if (this.filter.biome) {
-                return availability !== undefined
-            }
-
-            return true
-        })
-        const filteredIdList = this.filteredIndex?.map(item => item._id)
-
-        this.mainIndex = this.showFiltered
+        )
+        const
+            filteredIdList = this.filteredIndex?.map(item => item._id)
+        this
+            .mainIndex = !this.hideFiltered
             ? this.currentFolder?.content
             : this.currentFolder?.content.filter((item) => !filteredIdList.includes(item._id))
 
-        this.render()
+        this
+            .render()
     }
 
     async _resetFilter() {
