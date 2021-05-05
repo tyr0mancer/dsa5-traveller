@@ -5,8 +5,6 @@ export class ItemManager extends Application {
     constructor() {
         super();
         this.itemCompendiaOptions = game.packs.filter(p => p.metadata.entity === 'Item')
-        this.currentPack = undefined
-
         this.itemFolderOptions = game.folders.filter(f => (f.data.type === "Item"));
         this.hideFiltered = false
         this.filter = {}
@@ -31,14 +29,12 @@ export class ItemManager extends Application {
     async getData() {
         return {
             itemCompendiaOptions: this.itemCompendiaOptions,
-            currentPack: this.currentPack,
-
             itemFolderOptions: this.itemFolderOptions,
+            currentPack: this.currentPack,
             currentFolder: this.currentFolder,
             hideFiltered: this.hideFiltered,
             filter: this.filter,
             tag: this.tag,
-
             itemsLeft: this.mainIndex,
             itemsRight: this.filteredIndex,
         }
@@ -51,6 +47,7 @@ export class ItemManager extends Application {
         html.find("button[name=filter-apply]").click(() => this._applyFilter())
         html.find("button[name=filter-reset]").click(() => this._resetFilter())
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
+        html.find("select[name=select-pack]").change(event => this._selectPack(event))
         html.find("input[name=hide-filtered]").change(event => {
             this.hideFiltered = event.currentTarget.checked === true
             this._applyFilter()
@@ -65,37 +62,26 @@ export class ItemManager extends Application {
 
 
     async _applyFilter() {
-        this.filteredIndex = this.currentFolder?.content.filter(item => {
+        this.filteredIndex = this.itemList?.filter(item => {
                 if (!this.filter || !Object.keys(this.filter).length)
                     return false
-                console.log(this.filter)
-
-                let availability = item.data.data.availability
+                let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
                 if (this.filter.omit_general && availability?.general) return false
                 if (this.filter.omit_biomes && availability?.biomes?.length) return false
                 if (this.filter.omit_regions && availability?.regions?.length) return false
-
                 if (this.filter.region) {
-                    console.log(this.filter.region)
-                    console.log(availability)
-                    return (availability === undefined || availability.regions.find(e => e[0] === this.filter.region))
+                    return (availability?.regions.find(e => e[0] === this.filter.region))
                 }
-                if (this.filter.biome) {
-                    return availability !== undefined
-                }
-
+                if (this.filter.biome)
+                    return (availability?.biomes.find(e => e[0] === this.filter.biome))
                 return true
             }
         )
-        const
-            filteredIdList = this.filteredIndex?.map(item => item._id)
-        this
-            .mainIndex = !this.hideFiltered
-            ? this.currentFolder?.content
-            : this.currentFolder?.content.filter((item) => !filteredIdList.includes(item._id))
-
-        this
-            .render()
+        const filteredIdList = this.filteredIndex?.map(item => item._id)
+        this.mainIndex = !this.hideFiltered
+            ? this.itemList
+            : this.itemList?.filter((item) => !filteredIdList.includes(item._id))
+        this.render()
     }
 
     async _resetFilter() {
@@ -104,17 +90,33 @@ export class ItemManager extends Application {
     }
 
     async _selectFolder(event) {
-        const folderId = event.currentTarget.value
-        this.currentFolder = game.folders.find(f => f._id === folderId);
+        this.currentFolder = game.folders.find(f => f._id === event.currentTarget.value);
+        this.itemList = this.currentFolder?.content
+        await this._applyFilter()
+    }
+
+    async _selectPack(event) {
+        this.currentPack = this.itemCompendiaOptions.find(p => p.collection === event.currentTarget.value);
+        await this.currentPack?.getIndex()
+        let newItemList = []
+        for (let e of this.currentPack?.index) {
+            let item = await this.currentPack.getEntry(e._id)
+            newItemList.push(item)
+        }
+        this.itemList = newItemList
         await this._applyFilter()
     }
 
     async _applyTag(event) {
+        console.clear()
         const itemId = $(event.currentTarget).attr("data-item-id")
-        const item = await this.currentFolder?.content.find(i => i._id === itemId);
-        let general = (this.tag.overwrite && this.tag.general || !item.data.data.availability?.general) ? this.tag.general : item.data.data.availability?.general
-        let regions = this.tag.overwrite ? [] : item.data.data.availability?.regions || []
-        let biomes = this.tag.overwrite ? [] : item.data.data.availability?.biomes || []
+        const item = this.itemList.find(i => i._id === itemId);
+        let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
+        if (!availability) availability = {}
+
+        let general = (this.tag.overwrite && this.tag.general || !availability.general) ? this.tag.general : availability.general
+        let regions = this.tag.overwrite ? [] : availability.regions || []
+        let biomes = this.tag.overwrite ? [] : availability.biomes || []
         for (let [k, v] of Object.entries(this.tag)) {
             if (k.substr(0, 6) === 'region') {
                 let values = v.split(',') || [];
@@ -127,6 +129,7 @@ export class ItemManager extends Application {
             }
         }
         await item.update({"data.availability": {general, regions, biomes}})
+        console.log({"data.availability": {general, regions, biomes}})
         await this._applyFilter()
     }
 }

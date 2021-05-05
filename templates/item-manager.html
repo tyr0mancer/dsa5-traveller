@@ -9,7 +9,7 @@
                     <h2>Datenquelle wählen</h2>
                 </header>
                 <div class="select-css">
-                    <select id="select-item-pack" name="select-pack" disabled>
+                    <select id="select-item-pack" name="select-pack">
                         {{#select currentPack.collection}}
                         <option value="">-&#45;&#45;</option>
                         {{#each itemCompendiaOptions}}
@@ -48,7 +48,8 @@
                 <section class="help-info help-filter">
 
                     <div class="switch-checkbox">
-                        <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked tag.overwrite}}/>
+                        <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked
+                               tag.overwrite}}/>
                         <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
                     </div>
                     <div class="select-css">
@@ -156,12 +157,15 @@
                                 <td>{{{data.data.description.value}}}</td>
                     -->
                     <td>
+                        <pre>{{data.availability.general}}</pre>
                         <pre>{{data.data.availability.general}}</pre>
                     </td>
                     <td>
+                        <pre>{{{locationToString data.availability.regions}}}</pre>
                         <pre>{{{locationToString data.data.availability.regions}}}</pre>
                     </td>
                     <td>
+                        <pre>{{{locationToString data.availability.biomes}}}</pre>
                         <pre>{{{locationToString data.data.availability.biomes}}}</pre>
                     </td>
                 </tr>
@@ -188,18 +192,24 @@
                 {{#each itemsRight}}
                 <tr class="update-location apply-tag" data-item-id="{{_id}}">
                     <td><img src="{{img}}" style="height:64px"/></td>
-                    <td><h2>{{name}}</h2></td>
+                    <td>
+                        <h3>{{name}}</h3>
+                        <p>{{stringify data.location}}</p>
+                    </td>
                     <!--
                                 <td>{{{data.data.description.value}}}</td>
                     -->
                     <td>
-                        <pre>{{data.data.availability.general}}</pre>
+                        1<pre>{{data.availability.general}}</pre>
+                        2<pre>{{data.data.availability.general}}</pre>
                     </td>
                     <td>
-                        <pre>{{{locationToString data.data.availability.regions}}}</pre>
+                        1<pre>{{{locationToString data.availability.regions}}}</pre>
+                        2<pre>{{{locationToString data.data.availability.regions}}}</pre>
                     </td>
                     <td>
-                        <pre>{{{locationToString data.data.availability.biomes}}}</pre>
+                        1<pre>{{{locationToString data.availability.biomes}}}</pre>
+                        2<pre>{{{locationToString data.data.availability.biomes}}}</pre>
                     </td>
                 </tr>
                 {{/each}}
