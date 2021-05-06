@@ -133,8 +133,15 @@
                         data-region-key={{../key}}><i class="fas fa-save"></i></button>
             </div>
         </div>
-        {{/each}}
-        <!--index-->
+        {{/each}} <!--index-->
+
+        <div class="region-entry">
+            <div></div>
+            <div><input type="text" name="new-region-entry-name-{{key}}"/></div>
+            <div>
+                <button class="add-region-entry" data-region-kategorie-key="{{key}}"><i class="fas fa-plus"></i></button>
+        </div>
+        </div>
 
     </div>
     <hr/>
@@ -160,7 +167,6 @@
         <!--index-->
 
         <div class="region-entry">
-
             <div></div>
             <div><input type="text" name="new-biome-name"/></div>
             <div>
@@ -177,8 +183,8 @@
         </div>
 
         <div class="danger-zone-buttons hidden">
-            <button name="unset-flags">remove regions from drawings</button>
-            <button name="reset-regions">remove all region entries</button>
+            <button name="unset-flags">Region Flags von Drawings entfernen</button>
+            <button name="reset-regions">Alle Regions-Einträge entfernen</button>
         </div>
     </div>
 

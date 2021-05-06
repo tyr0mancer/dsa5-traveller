@@ -105,11 +105,14 @@ export class LocationManager extends Application {
         html.find("button[name='parse-drawing']").click(event => this._parseDrawings(event, html));
         html.find("button[name='rename-region-entry']").click(event => this._renameRegionEntry(event, html));
         html.find("button[name='remove-region-entry']").click(event => this._removeRegionEntry(event, html));
+        html.find("button.add-region-entry").click(event => this._addRegionEntry(event, html));
+
         html.find("button[name='update-location']").click(event => this._updateLocation());
         html.find("button[name='toggle-region']").click(event => this._toggleRegion(event));
         html.find("button[name='unset-flags']").click(event => this._unsetFlags(event, html));
         html.find("button[name='reset-regions']").click(event => this._resetRegions(event, html));
         html.find("button[name='add-biome']").click(event => this._addBiome(event, html));
+
         html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
         html.find("select[name='update-current-biome']").change(event => this._updateCurrentBiome(event, html));
         html.find("button[name='view-scene']").click(event => this._viewLocatorScene(event, html));
@@ -119,7 +122,6 @@ export class LocationManager extends Application {
         html.find("button[name='show-flags']").click(event => this._showFlags(event, html));
 
         // todo
-        html.find("button[name='add-region']").click(event => this._addRegion(event, html));
         html.find("button[name='delete-region']").click(event => this._deleteRegion(event, html));
     }
 
@@ -230,6 +232,19 @@ export class LocationManager extends Application {
         this.render()
     }
 
+    async _addRegionEntry(event, html) {
+        let regions = game.settings.get(moduleName, 'regions')
+        const regionKey = $(event.currentTarget).attr("data-region-kategorie-key")
+        const newRegionEntryName = html.find("input[name='new-region-entry-name-" + regionKey + "']")[0].value
+        regions.find(r => r.key === regionKey).index.push({
+            key: keyify(newRegionEntryName),
+            name: capitalize(newRegionEntryName)
+        })
+        this.settings.regions = regions
+        await this._saveSettings('regions')
+        this.render()
+    }
+
 
     /**
      *
@@ -310,15 +325,17 @@ export class LocationManager extends Application {
         const newRegionEntryName = html.find("input[data-region-id='" + regionEntryKey + "']")[0].value
         const newRegionEntryRegion = html.find("select[data-region-id='" + regionEntryKey + "']")[0].value
         if (newRegionEntryRegion !== regionKey) {
-            //todo eintrag umziehen
-            //console.log('Der Eintrag zieht um')
+            const oldRegion = this.settings.regions.find(r => r.key === regionKey)
+            const newRegion = this.settings.regions.find(r => r.key === newRegionEntryRegion)
+            const regionEntry = duplicate(oldRegion?.index.find(i => i.key === regionEntryKey))
+            regionEntry.name = newRegionEntryName
+            oldRegion.index = oldRegion.index.filter(r => r.key !== regionEntry.key)
+            newRegion.index.push(regionEntry)
+        } else {
+            const region = this.settings.regions.find(r => r.key === regionKey)
+            const index = region.index.find(i => i.key === regionEntryKey)
+            index.name = newRegionEntryName
         }
-
-        const region = this.settings.regions.find(r => r.key === regionKey)
-        const index = region.index.find(i => i.key === regionEntryKey)
-        index.name = newRegionEntryName
-
-
         await this._saveSettings('regions')
         this.render()
     }
@@ -401,12 +418,70 @@ export class LocationManager extends Application {
         if (!token)
             token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
         if (!token) {
-            ui.notifications.error(`locator token unavailable`);
-            return Error(`locator token unavailable`)
+            // ui.notifications.error(`locator token unavailable`);
+            //return Error(`locator token unavailable`)
+            return this._pickRegionDialog()
         }
-
         this.settings.location = await LocationManager.updateLocation(scene, token, this.settings.location, this.settings.regions)
         this.render()
+    }
+
+
+    _pickRegionDialog() {
+        const regions = game.settings.get(moduleName, 'regions')
+        const location = game.settings.get(moduleName, 'location')
+
+        console.clear()
+        console.log(location)
+        console.log(regions)
+
+        let content = ``
+        for (let category of regions) {
+            content += `<h2>${category.name}</h2>`
+            for (let entry of category.index) {
+                let checked = (location.region.find(r => r.key === category.key)?.index.find(e => e.key === entry.key) !== undefined) ? 'checked="checked"' : ''
+                content += `<input type="checkbox" id="${category.key}-${entry.key}" name="${category.key}.${entry.key}" ${checked} /><label for="${category.key}-${entry.key}">${entry.name}</label>`
+            }
+        }
+
+        let types = ['one']
+        let d = new Dialog({
+            title: "Region auswählen",
+            content,
+            buttons: {},
+            default: types[0],
+            close: () => {
+            }
+        });
+
+        types.forEach(x => {
+            d.data.buttons[x] = {
+                label: 'OK',
+                callback: (html) => {
+                    let regionSelection = []
+                    for (let data of html.find('input[type=checkbox]')) {
+                        if (!data.checked) continue
+                        let e = data.name.split('.')
+                        let regionCategory = regions.find(r => r.key === e[0])
+                        let region = regionCategory.index.find(c => c.key === e[1])
+                        let selectedCategory = regionSelection.find(r => r.key === e[0])
+                        if (!selectedCategory) {
+                            regionSelection.push({...regionCategory, index: []})
+                            selectedCategory = regionSelection.find(r => r.key === e[0])
+                        }
+                        selectedCategory.index.push(region)
+                    }
+                    let newLocation = {
+                        biome: location.biome,
+                        region: regionSelection
+                    }
+                    game.settings.set(moduleName, 'location', newLocation)
+                    this.settings.location = newLocation
+                    this.render()
+                }
+            }
+        });
+        d.render(true);
     }
 
 

@@ -20,7 +20,7 @@ export class ItemManager extends Application {
         options.resizable = true;
         options.top = 50;
         options.left = 200;
-        options.width = 1000;
+        options.width = 1200;
         options.height = 800;
         return options;
     }
@@ -57,7 +57,22 @@ export class ItemManager extends Application {
         html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
-        html.find("tr.apply-tag").click((event) => this._applyTag(event))
+        //html.find("tr.apply-tag").click((event) => this._applyTag(event))
+        html.find("tr.apply-tag").mousedown((event) => {
+            //event.preventDefault();
+            let isRightMB = false;
+            if ("which" in event) { // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+                isRightMB = event.which == 3;
+            } else if ("button" in event) { // IE, Opera
+                isRightMB = event.button == 2;
+            }
+            if (isRightMB) {
+                this._copyTag(event)
+            } else {
+                this._applyTag(event)
+            }
+
+        })
     }
 
 
@@ -112,6 +127,21 @@ export class ItemManager extends Application {
         }
         this.itemList = newItemList
         await this._applyFilter()
+    }
+
+    async _copyTag(event) {
+        const itemId = $(event.currentTarget).attr("data-item-id")
+        const item = this.itemList.find(i => i._id === itemId);
+        let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
+        if (!availability) return
+
+        let newTag = {general: availability.general, overwrite: this.tag.overwrite}
+        for (let e of availability.regions)
+            newTag['region' + e[1]] = e[0]
+        for (let e of availability.biomes)
+            newTag['biome' + e[1]] = e[0]
+        this.tag = newTag
+        this.render()
     }
 
     async _applyTag(event) {
