@@ -132,7 +132,7 @@
 .dsa5-traveller .danger-zone {
     padding-top: 10px;
     margin-top: 10px;
-    border-top: 2px solid blue;
+    border-top: 2px solid darkred;
 }
 
 .dsa5-traveller .danger-zone-buttons.hidden {

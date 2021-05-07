@@ -419,7 +419,7 @@ export class LocationManager extends Application {
         if (!scene)
             scene = game.scenes.active
         if (!token)
-            token = scene.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
+            token = scene?.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
         if (!token) {
             // ui.notifications.error(`locator token unavailable`);
             //return Error(`locator token unavailable`)
@@ -459,7 +459,7 @@ export class LocationManager extends Application {
 
         types.forEach(x => {
             d.data.buttons[x] = {
-                label: 'OK',
+                label: 'als aktuellen Standort wählen',
                 callback: (html) => {
                     let regionSelection = []
                     for (let data of html.find('input[type=checkbox]')) {
@@ -590,7 +590,8 @@ export class LocationManager extends Application {
 
     _viewLocatorScene(event, html) {
         const scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
-        scene.view()
+        if (scene)
+            scene.view()
     }
 
     _zoomToken(event, html) {

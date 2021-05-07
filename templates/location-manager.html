@@ -6,7 +6,7 @@
             <div class="active">Du siehst dir die Karten-Szene an</div>
             {{else}} <!--viewScene-->
             {{#if settings.general.locatorSceneName}}
-            <button name="view-scene">Zu <b>{{settings.general.locatorSceneName}}</b> wechseln</button>
+            <button name="view-scene">Zur Karte Szene wechseln</button>
             {{/if}} <!--locatorScene-->
             {{/if}} <!--viewScene-->
         </section>
@@ -82,18 +82,19 @@
                 <a><b onclick="$('.region.index.{{key}}').toggle();">{{name}} ({{index.length}})</b></a>
             </div>
             <div>
-                <button name="toggle-region"
+                <button name="toggle-region" title="Gebiete dieser Kategorie anzeigen"
                         data-show-region=true
                         data-region-key={{key}}><i class="fas fa-eye"></i></button>
-                <button name="toggle-region"
+                <button name="toggle-region" title="Gebiete dieser Kategorie verstecken"
                         data-show-region=false
                         data-region-key={{key}}><i class="fas fa-eye-slash"></i></button>
-                <button name="toggle-region"
+                <button name="toggle-region" title="Bei Gebieten dieser Kategorie die Ansicht wechseln"
                         data-region-key={{key}}
                         type="button"><i class="fas fa-exchange-alt"></i></button>
             </div>
             <div>
-                <button name="parse-drawing" data-region-key={{key}}><i class="fas fa-upload"></i></button>
+                <button title="Neue Zeichnungen der Karte-Szene als Gebiete dieser Kategorie interpretieren"
+                        name="parse-drawing" data-region-key={{key}}><i class="fas fa-upload"></i></button>
             </div>
         </div>
         <div class="region index {{key}}">
