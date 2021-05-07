@@ -1,191 +1,203 @@
-<section class="dsa5-traveller locator content">
+<div class="dsa5-traveller meistertools">
 
-    <!--set / display lcoator Token and - Scene-->
-    <div class="locator-setting">
-        {{#if status.viewsLocatorScene}}
-        <div class="scene active">
-            Scene: <b>{{settings.general.locatorSceneName}}</b>
-        </div>
-        {{ else }}
-        <div class="scene">
-            <button class="scene" name="set-locator-scene"><i class="fas fa-link"></i></button>
-            Scene: <b>{{settings.general.locatorSceneName}}</b>
-            <button class="scene" name="view-scene"><i class="far fa-map"></i></button>
-        </div>
-        {{/if}}
-        <!--status.viewsLocatorScene-->
+    <header style="display: grid; grid-template-columns: 50% 50%">
+        <section class="locator scene">
+            {{#if status.viewsLocatorScene}}
+            <div class="active">Du siehst dir die Karten-Szene an</div>
+            {{else}} <!--viewScene-->
+            {{#if settings.general.locatorSceneName}}
+            <button name="view-scene">Zu <b>{{settings.general.locatorSceneName}}</b> wechseln</button>
+            {{/if}} <!--locatorScene-->
+            {{/if}} <!--viewScene-->
+        </section>
+        <section class="locator token">
+            {{#if status.viewsLocatorToken}}
+            <div class="active">Mit diesem Token wird die Region ermittelt</div>
+            {{else}} <!--status.viewsLocatorToken-->
+            {{#if settings.general.locatorTokenName}}
+            <button name="zoom-token">Auf {{settings.general.locatorTokenName}} zentrieren</button>
+            {{/if}} <!--settings.general.locatorTokenName-->
+            {{/if}} <!--status.viewsLocatorToken-->
+        </section>
+    </header>
 
-        {{#if status.controlsOneToken}}
-        {{#if status.viewsLocatorToken}}
-        <div class="token active">
-            <button disabled><i class="fas fa-users"></i></button>
-            Token: <b>{{settings.general.locatorTokenName}}</b>
-        </div>
-        {{ else }}
-        <div class="token active">
-            <button name="set-locator-token"><i class="fas fa-users"></i></button>
-            Token: <b>{{settings.general.locatorTokenName}}</b>
-        </div>
-        {{/if}}
-        <!--status.viewsLocatorToken-->
-        {{else}}
-        <!--controlsOneToken-->
-        <div class="token">
-            <button disabled><i class="fas fa-users"></i></button>
-            Token: <b>{{settings.general.locatorTokenName}}</b>
-        </div>
-        {{/if}}
-        <!--controlsOneToken-->
-    </div>
 
-    <!-- show / update current location and set biome -->
-    <div class="current-location">
-        <div class="icon">
-            <button name="update-location"><i class="far fa-compass"></i></button>
-        </div>
-        <div class="result">
-            {{#each settings.location.region}}
-            <div>
-                <b>{{name}}</b>
-                {{#each index}}
-                <span>{{name}}</span>
-                {{/each}}
-                <!--index-->
+    <main style="display: grid; grid-template-columns: auto 220px">
+        <section class="current-location">
+            <div class="icon">
+                <button name="update-location"><i class="far fa-compass"></i></button>
             </div>
-            {{/each}}
-            <!--settings.location-->
-        </div>
-        <div class="result">
+            <div class="result">
+                {{#each settings.location.region}}
+                <div>
+                    <b>{{name}}</b>
+                    {{#each index}}
+                    <span>{{name}}</span>
+                    {{/each}} <!--index-->
+                </div>
+                {{/each}} <!--settings.location-->
+            </div>
+        </section>
+        <section class="update-biome">
+
             <select name="update-current-biome">
                 {{#select settings.location.biome.key}}
                 {{#each settings.biomes}}
                 <option value="{{key}}">{{name}}</option>
-                {{/each}}
-                <!--settings.biomes-->
+                {{/each}} <!--settings.biomes-->
                 {{/select}}
             </select>
-        </div>
-    </div>
 
-    <!-- all region types and their region entries -->
-    {{#each settings.regions}}
-    <div class="region head">
-        <div>
-            <a><b onclick="$('.region.index.{{key}}').toggle();">{{name}} ({{index.length}})</b></a>
-        </div>
-        <div>
-            <button name="toggle-region"
-                    data-show-region=true
-                    data-region-key={{key}}><i class="fas fa-eye"></i></button>
-            <button name="toggle-region"
-                    data-show-region=false
-                    data-region-key={{key}}><i class="fas fa-eye-slash"></i></button>
-            <button name="toggle-region"
-                    data-region-key={{key}}
-                    type="button"><i class="fas fa-exchange-alt"></i></button>
-        </div>
-        <div>
-            <button name="parse-drawing" data-region-key={{key}}><i class="fas fa-upload"></i></button>
-        </div>
-    </div>
-    <div class="region index {{key}}">
-        {{#each index}}
-        <div class="region-entry">
-            <div><a><span onclick="$('.region-name-edit.hidden.{{key}}').toggle();">{{name}}</span></a></div>
+        </section>
+
+    </main>
+
+
+    <section>
+        <h2>Szene als Karte wählen / Token-Auswahl</h2>
+
+        {{#unless status.viewsLocatorScene}}
+        <button class="scene" name="set-locator-scene"><i class="fas fa-link"></i> Szene als Karte definieren</button>
+        {{else}}
+        <button disabled class="scene" name="set-locator-scene"><i class="fas fa-link"></i> Szene als Karte definieren</button>
+        {{/unless}} <!--status.viewsLocatorScene-->
+
+        {{#if status.controlsOneToken}}
+        {{#unless status.viewsLocatorToken}}
+        <button name="set-locator-token"><i class="fas fa-link"></i> Token zur Ermittlung von Regionen verwenden</button>
+        {{else}}
+        <button disabled name="set-locator-token"><i class="fas fa-link"></i> Token zur Ermittlung von Regionen verwenden</button>
+        {{/unless}} <!--status.viewsLocatorToken-->
+        {{/if}} <!--controlsOneToken-->
+    </section>
+
+
+    <section>
+        <h2>Regionen verwalten</h2>
+
+        <!-- all region types and their region entries -->
+        {{#each settings.regions}}
+        <div class="region head">
+            <div>
+                <a><b onclick="$('.region.index.{{key}}').toggle();">{{name}} ({{index.length}})</b></a>
+            </div>
             <div>
                 <button name="toggle-region"
                         data-show-region=true
-                        data-region-key={{../key}}
-                        data-region-id={{key}}
-                        type="button"><i class="fas fa-eye"></i></button>
+                        data-region-key={{key}}><i class="fas fa-eye"></i></button>
                 <button name="toggle-region"
                         data-show-region=false
-                        data-region-key={{../key}}
-                        data-region-id={{key}}
-                        type="button"><i class="fas fa-eye-slash"></i></button>
+                        data-region-key={{key}}><i class="fas fa-eye-slash"></i></button>
                 <button name="toggle-region"
-                        data-region-key={{../key}}
-                        data-region-id={{key}}
+                        data-region-key={{key}}
                         type="button"><i class="fas fa-exchange-alt"></i></button>
             </div>
             <div>
-                <button name="remove-region-entry"
-                        data-region-entry-key={{key}}
-                        data-region-key={{../key}}><i class="fas fa-trash"></i></button>
+                <button name="parse-drawing" data-region-key={{key}}><i class="fas fa-upload"></i></button>
             </div>
-            <div class="region-name-edit hidden {{key}}">
-                <input type="text" name="new-region-entry-name" data-region-id={{key}} value="{{name}}"/>
+        </div>
+        <div class="region index {{key}}">
+            {{#each index}}
+            <div class="region-entry">
+                <div><a><span onclick="$('.region-name-edit.hidden.{{key}}').toggle();">{{name}}</span></a></div>
+                <div>
+                    <button name="toggle-region"
+                            data-show-region=true
+                            data-region-key={{../key}}
+                            data-region-id={{key}}
+                            type="button"><i class="fas fa-eye"></i></button>
+                    <button name="toggle-region"
+                            data-show-region=false
+                            data-region-key={{../key}}
+                            data-region-id={{key}}
+                            type="button"><i class="fas fa-eye-slash"></i></button>
+                    <button name="toggle-region"
+                            data-region-key={{../key}}
+                            data-region-id={{key}}
+                            type="button"><i class="fas fa-exchange-alt"></i></button>
+                </div>
+                <div>
+                    <button name="remove-region-entry"
+                            data-region-entry-key={{key}}
+                            data-region-key={{../key}}><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="region-name-edit hidden {{key}}">
+                    <input type="text" name="new-region-entry-name" data-region-id={{key}} value="{{name}}"/>
+                </div>
+                <div class="region-name-edit hidden {{key}}">
+                    <select name="new-region-key" data-region-id={{key}}>
+                        {{#select ../key}}
+                        {{#each ../../settings.regions}}
+                        <option value="{{key}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                        <option></option>
+                    </select>
+                </div>
+
+                <div class="region-name-edit hidden {{key}}">
+                    <button name="rename-region-entry"
+                            data-region-entry-key={{key}}
+                            data-region-key={{../key}}><i class="fas fa-save"></i></button>
+                </div>
             </div>
-            <div class="region-name-edit hidden {{key}}">
-                <select name="new-region-key" data-region-id={{key}}>
-                    {{#select ../key}}
-                    {{#each ../../settings.regions}}
-                    <option value="{{key}}">{{name}}</option>
-                    {{/each}}
-                    {{/select}}
-                    <option></option>
-                </select>
+            {{/each}} <!--index-->
+
+            <div class="region-entry">
+                <div></div>
+                <div><input type="text" name="new-region-entry-name-{{key}}"/></div>
+                <div>
+                    <button class="add-region-entry" data-region-kategorie-key="{{key}}"><i class="fas fa-plus"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="region-name-edit hidden {{key}}">
-                <button name="rename-region-entry"
-                        data-region-entry-key={{key}}
-                        data-region-key={{../key}}><i class="fas fa-save"></i></button>
-            </div>
         </div>
-        {{/each}} <!--index-->
-
-        <div class="region-entry">
-            <div></div>
-            <div><input type="text" name="new-region-entry-name-{{key}}"/></div>
-            <div>
-                <button class="add-region-entry" data-region-kategorie-key="{{key}}"><i class="fas fa-plus"></i></button>
-        </div>
-        </div>
-
-    </div>
-    <hr/>
-    {{/each}}
-    <!--settings.regions-->
-
-    <!-- all biomes -->
-    <div class="region head">
-        <div>
-            <a><b onclick="$('.region.index.biomes').toggle();">Biome ({{this.settings.biomes.length}})</b></a>
-        </div>
-    </div>
-    <div class="region index biomes">
-        {{#each this.settings.biomes}}
-        <div class="region-entry">
-            <div>{{name}}</div>
-            <div></div>
-            <div>
-                <button name="remove-biome" data-biome-key={{key}}><i class="fas fa-trash"></i></button>
-            </div>
-        </div>
+        <hr/>
         {{/each}}
-        <!--index-->
+        <!--settings.regions-->
 
-        <div class="region-entry">
-            <div></div>
-            <div><input type="text" name="new-biome-name"/></div>
+        <!-- all biomes -->
+        <div class="region head">
             <div>
-                <button name="add-biome"><i class="fas fa-plus"></i></button>
+                <a><b onclick="$('.region.index.biomes').toggle();">Biome ({{this.settings.biomes.length}})</b></a>
+            </div>
+        </div>
+        <div class="region index biomes">
+            {{#each this.settings.biomes}}
+            <div class="region-entry">
+                <div>{{name}}</div>
+                <div></div>
+                <div>
+                    <button name="remove-biome" data-biome-key={{key}}><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            {{/each}}
+            <!--index-->
+
+            <div class="region-entry">
+                <div></div>
+                <div><input type="text" name="new-biome-name"/></div>
+                <div>
+                    <button name="add-biome"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+        </div>
+        <hr/>
+
+        <div class="danger-zone">
+            <div>
+                <a><h1 onclick="$('.danger-zone-buttons.hidden').toggle();">Danger Zone</h1></a>
+            </div>
+
+            <div class="danger-zone-buttons hidden">
+                <button name="unset-flags">Region Flags von Drawings entfernen</button>
+                <button name="reset-regions">Alle Regions-Einträge entfernen</button>
             </div>
         </div>
 
-    </div>
-    <hr/>
+    </section>
 
-    <div class="danger-zone">
-        <div>
-            <a><h1 onclick="$('.danger-zone-buttons.hidden').toggle();">Danger Zone</h1></a>
-        </div>
 
-        <div class="danger-zone-buttons hidden">
-            <button name="unset-flags">Region Flags von Drawings entfernen</button>
-            <button name="reset-regions">Alle Regions-Einträge entfernen</button>
-        </div>
-    </div>
-
-</section>
+</div>

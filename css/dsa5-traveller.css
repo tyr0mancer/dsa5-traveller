@@ -1,3 +1,30 @@
+.dsa5-traveller .locator {
+    background-color: lightgray;
+    height: 50px
+}
+
+.dsa5-traveller .locator .active {
+    background-color: lightgreen;
+    text-align: center;
+    padding-top: 10px;
+    font-weight: bolder;
+    font-size: 1.2em;
+    height: 50px;
+}
+
+.dsa5-traveller .locator.token {
+    text-align: right;
+}
+
+.dsa5-traveller .locator.token button {
+    width: 220px;
+}
+
+
+
+
+
+
 /*custom cursor*/
 
 .update-location {
@@ -34,7 +61,6 @@
 .dsa5-traveller .current-location {
     display: grid;
     grid-template-columns: 70px auto 100px;
-    border-bottom: 2px solid blue;
     padding-bottom: 10px;
     margin-bottom: 10px;
 }

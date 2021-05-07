@@ -116,6 +116,7 @@ export class LocationManager extends Application {
         html.find("button[name='remove-biome']").click(event => this._removeBiome(event, html));
         html.find("select[name='update-current-biome']").change(event => this._updateCurrentBiome(event, html));
         html.find("button[name='view-scene']").click(event => this._viewLocatorScene(event, html));
+        html.find("button[name='zoom-token']").click(event => this._zoomToken(event, html));
 
 
         // helper during development
@@ -153,6 +154,8 @@ export class LocationManager extends Application {
         if (!token) return
         this.settings.general.locatorToken._id = token.data._id
         this.settings.general.locatorToken.name = token.data.name
+        this.settings.general.locatorToken.x = token.data.x
+        this.settings.general.locatorToken.y = token.data.y
         this._saveSettings()
         this.render()
     }
@@ -588,6 +591,13 @@ export class LocationManager extends Application {
     _viewLocatorScene(event, html) {
         const scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
         scene.view()
+    }
+
+    _zoomToken(event, html) {
+        if (!this.settings.general.locatorToken) return
+        this._viewLocatorScene()
+        let {x, y} = this.settings.general.locatorToken
+        canvas.pan({x, y})
     }
 }
 

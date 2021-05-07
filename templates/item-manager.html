@@ -1,6 +1,6 @@
 <section class="meistertools content">
 
-    <h1>Item Manager</h1>
+    <h1>Verfügbarkeiten verwalten</h1>
 
     <div class="col-3" style="grid-template-columns: auto auto 300px;">
 
@@ -13,7 +13,7 @@
                 <h2>Datenquelle wählen</h2>
             </header>
             <div class="select-css">
-                <select id="select-item-pack" name="select-pack">
+                <select id="select-item-pack" name="select-pack" style="width: 150px">
                     {{#select currentPack.collection}}
                     <option value="">-&#45;&#45;</option>
                     {{#each itemCompendiaOptions}}
@@ -21,10 +21,10 @@
                     {{/each}}
                     {{/select}}
                 </select>
-                <label for="select-item-pack">Aus Kompendium wählen</label>
+                <label for="select-item-pack">Aus Kompendium</label>
             </div>
             <div class="select-css">
-                <select id="select-item-folder" name="select-folder">
+                <select id="select-item-folder" name="select-folder" style="width: 150px">
                     {{#select currentFolder._id}}
                     <option value="">---</option>
                     {{#each itemFolderOptions}}
@@ -33,10 +33,6 @@
                     {{/select}}
                 </select>
                 <label for="select-item-folder">Lokale Ordner</label>
-            </div>
-            <div class="switch-checkbox">
-                <input id="hide-filtered" name="hide-filtered" type="checkbox" {{checked hideFiltered}}/>
-                <label for="hide-filtered">Gefilterte Auswahl aus Hauptansicht entfernen</label>
             </div>
         </section>
 
@@ -50,6 +46,11 @@
                 <h2>Filter wählen</h2>
             </header>
             <main>
+                <div class="switch-checkbox">
+                    <input id="hide-filtered" name="hide-filtered" type="checkbox" {{checked hideFiltered}}/>
+                    <label for="hide-filtered">Gefilterte Auswahl aus Hauptansicht entfernen</label>
+                </div>
+
                 <div class="switch-checkbox">
                     <input id="omit-general-availability" name="omit_general" class="filter" type="checkbox" {{checked
                            filter.omit_general}}/>
