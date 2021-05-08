@@ -1,16 +1,7 @@
 import {moduleName} from "../dsa5-traveller.js";
 
-const COLOR_ARRAY = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
-    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
-    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
-    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
-    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
-    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
-    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
-    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
-    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
-    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
 
+// todo this needs some review
 const DRAWING_FORMATS = {
     stadt: {
         textColor: "#ffffff",
@@ -51,21 +42,13 @@ export class LocationManager extends Application {
 
     constructor() {
         super();
-        /*
-                game.settings.set(moduleName, "settings", undefined)
-                game.settings.set(moduleName, "regions", undefined)
-        */
-
-
-        /* read settings */
         this._loadSettings(['general', 'regions', 'location', 'biomes'])
-
-        //this.regions = LocationManager.getDefaultSettings().regions //game.settings.set(moduleName, 'regions')
-        //game.settings.set(moduleName, 'regions', LocationManager.getDefaultSettings().regions)
-
         Hooks.on("canvasInit", () => this.render());
         Hooks.on("controlToken", () => this.render());
-
+        Hooks.on(moduleName + ".update-location", () => {
+            this.settings.location = game.settings.get(moduleName, 'location')
+            this.render()
+        });
     }
 
     static get defaultOptions() {
@@ -408,6 +391,7 @@ export class LocationManager extends Application {
         }
         location.region = result
         await game.settings.set(moduleName, 'location', location)
+        Hooks.call(moduleName + ".update-location", null)
         return location
     }
 
@@ -563,22 +547,22 @@ export class LocationManager extends Application {
     }
 
     /**
-     *
-     * @return Object
+     * Default Settings
      */
-    static getDefaultSettings() {
+    static get defaultSettings() {
         return {
             regions: [
-                {key: "stadt", name: "Städte", index: [{key: 'gareth', name: 'Gareth und Umgebung'}]},
+                {key: "stadt", name: "Städte", index: []},
                 {key: "land", name: "Landschaften", index: []},
                 {key: "politik", name: "Politisch", index: []}
             ],
             biomes: [
-                {key: 'steppe', name: 'Steppe'},
                 {key: 'wald', name: 'Wald'},
+                {key: 'steppe', name: 'Steppe'},
                 {key: 'regenwald', name: 'Regenwald'},
                 {key: 'wueste', name: 'Wüste'},
                 {key: 'gebirge', name: 'Gebirge'},
+                {key: 'eiswueste', name: 'Eiswüste'},
             ],
             location: null,
             general: {
@@ -614,3 +598,16 @@ const keyify = (s) => {
     result = result.replace(/[^\w_-]/g, '');
     return result
 }
+
+
+// those are used to randomly color maps
+const COLOR_ARRAY = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
+    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+    '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A',
+    '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+    '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC',
+    '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+    '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680',
+    '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+    '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
+    '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
