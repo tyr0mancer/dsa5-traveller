@@ -1,5 +1,6 @@
 import {LocationManager} from "./module/location-manager.js";
 import {ItemManager} from "./module/item-manager.js";
+import Dsa5Availability from "./module/dsa5-availability.js";
 
 export const moduleName = "dsa5-traveller";
 export const meistertoolsModuleName = 'dsa5-meistertools'
@@ -9,12 +10,11 @@ export const meistertoolsModuleName = 'dsa5-meistertools'
  * updates the current location when the token that is marked as locator token in the settings is moved
  */
 Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
-    if (!delta.x && !delta.y)
-        return
-    if (game.settings.get(moduleName, "general").locatorToken._id === token._id) {
+    if (!delta.x && !delta.y) return
+    if (game.settings.get(moduleName, "general")?.locatorToken?._id === token._id) {
         token.x = delta.x || token.x
         token.y = delta.y || token.y
-        await LocationManager.updateLocation(scene, token)
+        await Dsa5Availability.updateLocationFromTokenAndMap({scene, token})
     }
 });
 

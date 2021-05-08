@@ -11,6 +11,11 @@ export class ItemManager extends Application {
         this.filter = {}
         this.tag = {}
         this.currentLocation = Dsa5Availability.currentLocation
+        Hooks.on(moduleName + ".update-location", () => {
+            this.currentLocation = Dsa5Availability.currentLocation
+            this.render()
+        });
+
     }
 
     static get defaultOptions() {

@@ -5,8 +5,10 @@
             {{#if status.viewsLocatorScene}}
             <div class="active">Du siehst dir die Karten-Szene an</div>
             {{else}} <!--viewScene-->
-            {{#if settings.general.locatorSceneName}}
-            <button name="view-scene">Zur Karte Szene wechseln</button>
+            {{#if settings.general.locatorScene._id}}
+            <button name="view-scene">Zur Karten-Szene wechseln</button>
+            {{else}}
+            <div class="inactive">Keine Karten-Szene ausgewählt</div>
             {{/if}} <!--locatorScene-->
             {{/if}} <!--viewScene-->
         </section>
@@ -14,8 +16,10 @@
             {{#if status.viewsLocatorToken}}
             <div class="active">Mit diesem Token wird die Region ermittelt</div>
             {{else}} <!--status.viewsLocatorToken-->
-            {{#if settings.general.locatorTokenName}}
-            <button name="zoom-token">Auf {{settings.general.locatorTokenName}} zentrieren</button>
+            {{#if settings.general.locatorToken.name}}
+            <button name="zoom-token">Auf {{settings.general.locatorToken.name}} zentrieren</button>
+            {{else}}
+            <div class="inactive">Kein Token ausgewählt</div>
             {{/if}} <!--settings.general.locatorTokenName-->
             {{/if}} <!--status.viewsLocatorToken-->
         </section>

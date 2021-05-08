@@ -1,4 +1,5 @@
 import {moduleName} from "../dsa5-traveller.js";
+import Dsa5Availability from "./dsa5-availability.js";
 
 
 // todo this needs some review
@@ -70,8 +71,8 @@ export class LocationManager extends Application {
     async getData() {
         const status = {
             controlsOneToken: (canvas.tokens?.controlled.length === 1),
-            viewsLocatorScene: (this.settings.general.locatorScene._id === canvas.scene._id),
-            viewsLocatorToken: (this.settings.general.locatorToken._id === canvas.tokens.controlled[0]?.data._id)
+            viewsLocatorScene: (this.settings.general?.locatorScene?._id === canvas.scene._id),
+            viewsLocatorToken: (this.settings.general?.locatorToken?._id && (this.settings.general?.locatorToken?._id === canvas.tokens.controlled[0]?.data._id))
         }
 
         return mergeObject(super.getData(), {
@@ -90,7 +91,7 @@ export class LocationManager extends Application {
         html.find("button[name='remove-region-entry']").click(event => this._removeRegionEntry(event, html));
         html.find("button.add-region-entry").click(event => this._addRegionEntry(event, html));
 
-        html.find("button[name='update-location']").click(event => this._updateLocation());
+        html.find("button[name='update-location']").click(event => this._updateLocationManually());
         html.find("button[name='toggle-region']").click(event => this._toggleRegion(event));
         html.find("button[name='unset-flags']").click(event => this._unsetFlags(event, html));
         html.find("button[name='reset-regions']").click(event => this._resetRegions(event, html));
@@ -105,8 +106,9 @@ export class LocationManager extends Application {
         // helper during development
         html.find("button[name='show-flags']").click(event => this._showFlags(event, html));
 
-        // todo
+        // todo implement
         html.find("button[name='delete-region']").click(event => this._deleteRegion(event, html));
+        html.find("button[name='add-region']").click(event => this._addRegion(event, html));
     }
 
 
@@ -135,6 +137,7 @@ export class LocationManager extends Application {
         if (!token)
             token = canvas.tokens.controlled[0]
         if (!token) return
+        this.settings.general.locatorToken = {}
         this.settings.general.locatorToken._id = token.data._id
         this.settings.general.locatorToken.name = token.data.name
         this.settings.general.locatorToken.x = token.data.x
@@ -354,62 +357,13 @@ export class LocationManager extends Application {
         this.render()
     }
 
-    static async updateLocation(scene, token, location = undefined, regions = undefined) {
-        if (location === undefined)
-            location = game.settings.get(moduleName, 'location')
-        if (regions === undefined)
-            regions = game.settings.get(moduleName, 'regions')
-
-        const gridSize = scene.data.grid
-        const tokenX = token.x + (0.5 * gridSize)
-        const tokenY = token.y + (0.5 * gridSize)
-        let locations = {}
-        for (let drawing of scene.data.drawings) {
-            let points = [];
-            for (let i = 0; i < drawing.points.length; i++) {
-                points.push(drawing.points[i][0] + drawing.x);
-                points.push(drawing.points[i][1] + drawing.y);
-            }
-            let polygon = new PIXI.Polygon(points)
-            let flags = drawing.flags[moduleName]
-            if (flags && polygon.contains(tokenX, tokenY)) {
-                for (let key in flags) {
-                    if (!locations[key])
-                        locations[key] = []
-                    locations[key].push(flags[key])
-                }
-            }
-        }
-        let result = []
-        for (let regionKey of Object.keys(locations)) {
-            const region = regions.find(r => r.key === regionKey)
-            if (!region) continue
-            result.push({
-                ...region,
-                index: region.index.filter(i => locations[regionKey].includes(i.key))
-            })
-        }
-        location.region = result
-        await game.settings.set(moduleName, 'location', location)
-        Hooks.call(moduleName + ".update-location", null)
-        return location
-    }
-
-
-    async _updateLocation(scene, token) {
-        if (!scene && this.settings.general.locatorScene._id) {
-            scene = game.scenes.entities.find(s => s._id === this.settings.general.locatorScene._id);
-        }
-        if (!scene)
-            scene = game.scenes.active
-        if (!token)
-            token = scene?.data.tokens.find(t => t._id === this.settings.general.locatorToken._id)
-        if (!token) {
-            // ui.notifications.error(`locator token unavailable`);
-            //return Error(`locator token unavailable`)
+    async _updateLocationManually() {
+        try {
+            this.settings.location = await Dsa5Availability.updateLocationFromTokenAndMap({})
+        } catch (e) {
+            ui.notifications.error(e);
             return this._pickRegionDialog()
         }
-        this.settings.location = await LocationManager.updateLocation(scene, token, this.settings.location, this.settings.regions)
         this.render()
     }
 
@@ -417,10 +371,6 @@ export class LocationManager extends Application {
     _pickRegionDialog() {
         const regions = game.settings.get(moduleName, 'regions')
         const location = game.settings.get(moduleName, 'location')
-
-        console.clear()
-        console.log(location)
-        console.log(regions)
 
         let content = ``
         for (let category of regions) {
