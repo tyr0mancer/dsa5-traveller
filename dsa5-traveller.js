@@ -5,14 +5,16 @@ export const moduleName = "dsa5-traveller";
 export const meistertoolsModuleName = 'dsa5-meistertools'
 
 
+/**
+ * updates the current location when the token that is marked as locator token in the settings is moved
+ */
 Hooks.on("preUpdateToken", async (scene, token, delta, id) => {
-    const tokenId = game.settings.get(moduleName, "general").locatorToken._id
-    if (delta.x || delta.y) {
-        if (tokenId === token._id) {
-            token.x = delta.x || token.x
-            token.y = delta.y || token.y
-            await LocationManager.updateLocation(scene, token)
-        }
+    if (!delta.x && !delta.y)
+        return
+    if (game.settings.get(moduleName, "general").locatorToken._id === token._id) {
+        token.x = delta.x || token.x
+        token.y = delta.y || token.y
+        await LocationManager.updateLocation(scene, token)
     }
 });
 
@@ -30,10 +32,9 @@ Hooks.once('init', () => {
 
 });
 
-Hooks.once('ready', function () {
-    console.log(moduleName, "| Ready")
-});
-
+/**
+ * adds entries to MeisterTools Menubar. Should update this to make this mod independent
+ */
 Hooks.on("getSceneControlButtons", (controls) => {
     const meisterPanel = controls.find(c => (c.name === meistertoolsModuleName))
     if (!meisterPanel) return
@@ -60,8 +61,11 @@ Hooks.on("getSceneControlButtons", (controls) => {
 });
 
 
+/**
+ * we will manage all settings through the application, no entry in the settings menu needed
+ */
 function registerSettings() {
-    const defaultSettings = LocationManager.getDefaultSettings()
+    const defaultSettings = LocationManager.defaultSettings
 
     game.settings.register(moduleName, "general", {
         scope: "world",
