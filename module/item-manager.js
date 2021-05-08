@@ -1,4 +1,5 @@
 import {moduleName} from "../dsa5-traveller.js";
+import Dsa5Availability from "./dsa5-availability.js";
 
 export class ItemManager extends Application {
 
@@ -9,6 +10,7 @@ export class ItemManager extends Application {
         this.hideFiltered = false
         this.filter = {}
         this.tag = {}
+        this.currentLocation = Dsa5Availability.currentLocation
     }
 
     static get defaultOptions() {
@@ -37,6 +39,7 @@ export class ItemManager extends Application {
             tag: this.tag,
             itemsLeft: this.mainIndex,
             itemsRight: this.filteredIndex,
+            currentLocation: this.currentLocation
         }
     }
 
@@ -58,7 +61,7 @@ export class ItemManager extends Application {
         html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
         //html.find("tr.apply-tag").click((event) => this._applyTag(event))
-        html.find("tr.apply-tag").mousedown((event) => {
+        html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
             let isRightMB = false;
             if ("which" in event) { // Gecko (Firefox), WebKit (Safari/Chrome) & Opera

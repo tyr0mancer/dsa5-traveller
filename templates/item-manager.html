@@ -1,16 +1,35 @@
-<section class="meistertools content">
+<section class="meistertools dsa5-traveller content">
 
-    <h1>Verfügbarkeiten verwalten</h1>
+    <div class="col-2" style="grid-template-columns: auto 300px;">
+        <h1>Verfügbarkeiten verwalten</h1>
 
-    <div class="col-3" style="grid-template-columns: auto auto 300px;">
+        <!-- <section class="round-box no-header"> -->
+        <section>
+
+            {{#each currentLocation.region}}
+            <div>
+                <b>{{name}}</b>
+                {{#each index}}
+                <span>{{name}}</span>
+                {{/each}} <!--index-->
+            </div>
+            {{/each}} <!--settings.location-->
+            <div>
+                <b>Landschafts-Typ:</b>
+                <span>{{currentLocation.biome.name}}</span>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="col-3" style="grid-template-columns: 200px auto 300px;">
 
         <!-- ---------------------
-        Row 1 / Col 1
-        Datenquelle
+        Col 1 - Datenquelle
         --------------------- -->
         <section class="round-box">
             <header>
-                <h2>Datenquelle wählen</h2>
+                <h2>Datenquelle</h2>
             </header>
             <div class="select-css">
                 <select id="select-item-pack" name="select-pack" style="width: 150px">
@@ -38,12 +57,11 @@
 
 
         <!-- ---------------------
-        Row 1 / Col 2
-        Filter
+        Col 2 - Filter
         --------------------- -->
         <section class="round-box">
             <header>
-                <h2>Filter wählen</h2>
+                <h2>Filter</h2>
             </header>
             <main>
                 <div class="switch-checkbox">
@@ -80,10 +98,9 @@
 
 
         <!-- ---------------------
-        Row 1 / Col 3
-        Tag
+        Col 3 - Label / Tag
         --------------------- -->
-        <section class="round-box"  style="grid-row: span 2">
+        <section class="round-box">
             <header>
                 <h2>Label</h2>
             </header>
@@ -146,102 +163,46 @@
                 </table>
             </main>
         </section>
-
-
-        <!-- ---------------------
-        Row 2 / Col 1
-        Alle Items aus Pack / Ordner
-        --------------------- -->
-        <div>
-            <h1>Alle Items:</h1>
-            <table>
-                <tr>
-                    <th>Bild</th>
-                    <th>Name</th>
-                    <!--
-                                <th>Beschreibung</th>
-                    -->
-                    <th>Verfügbarkeit</th>
-                    <th>Regionen</th>
-                    <th>Landschafts-Typen</th>
-                </tr>
-
-                {{#each itemsLeft}}
-                <tr>
-                    <td><img src="{{img}}" style="height:32px"/></td>
-                    <td><h3>{{name}}</h3></td>
-                    <!--
-                                <td>{{{data.data.description.value}}}</td>
-                    -->
-                    <td>
-                        <pre>{{data.availability.general}}</pre>
-                        <pre>{{data.data.availability.general}}</pre>
-                    </td>
-                    <td>
-                        <pre>{{{locationToString data.availability.regions}}}</pre>
-                        <pre>{{{locationToString data.data.availability.regions}}}</pre>
-                    </td>
-                    <td>
-                        <pre>{{{locationToString data.availability.biomes}}}</pre>
-                        <pre>{{{locationToString data.data.availability.biomes}}}</pre>
-                    </td>
-                </tr>
-                {{/each}}
-                <!--currentPack.index-->
-
-            </table>
-        </div>
-
-
-
-        <!-- ---------------------
-        Row 2 / Col 2
-        Gefilterte Auswahl
-        --------------------- -->
-        <div>
-            <h1>Gefilterte Auswahl:</h1>
-            <table>
-                <tr>
-                    <th>Bild</th>
-                    <th>Name</th>
-                    <!--
-                                <th>Beschreibung</th>
-                    -->
-                    <th>Verfügbarkeit</th>
-                    <th>Regionen</th>
-                    <th>Landschafts-Typen</th>
-                </tr>
-
-                {{#each itemsRight}}
-                <tr class="update-location apply-tag" data-item-id="{{_id}}">
-                    <td><img src="{{img}}" style="height:48px"/></td>
-                    <td>
-                        <h3>{{name}}</h3>
-                        <!--
-                                                <p>{{stringify data.location}}</p>
-                        -->
-                    </td>
-                    <!--
-                                <td>{{{data.data.description.value}}}</td>
-                    -->
-                    <td>
-                        <pre>{{data.availability.general}}</pre>
-                        <pre>{{data.data.availability.general}}</pre>
-                    </td>
-                    <td>
-                        <pre>{{{locationToString data.availability.regions}}}</pre>
-                        <pre>{{{locationToString data.data.availability.regions}}}</pre>
-                    </td>
-                    <td>
-                        <pre>{{{locationToString data.availability.biomes}}}</pre>
-                        <pre>{{{locationToString data.data.availability.biomes}}}</pre>
-                    </td>
-                </tr>
-                {{/each}}
-                <!--currentPack.index-->
-
-            </table>
-        </div>
     </div>
 
-</section>
+
+    <!-- ---------------------
+    Row 2 items table
+    --------------------- -->
+
+    <table class="item-table">
+        <tr>
+            <th>Bild</th>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Verfügbarkeit</th>
+            <th>Regionen</th>
+            <th>Landschafts-Typen</th>
+        </tr>
+
+        {{#each itemsLeft}}
+        <tr class="update-location">
+            <td><img src="{{img}}" style="height: 48px;width: 48px"/></td>
+            <td><h3>{{name}}</h3></td>
+            <td>
+                {{{data.description.value}}}
+                {{{data.data.description.value}}}
+            </td>
+            <td class="apply-tag" data-item-id="{{_id}}">
+                <pre>{{data.availability.general}}</pre>
+                <pre>{{data.data.availability.general}}</pre>
+            </td>
+            <td class="apply-tag" data-item-id="{{_id}}">
+                <pre>{{{locationToString data.availability.regions}}}</pre>
+                <pre>{{{locationToString data.data.availability.regions}}}</pre>
+            </td>
+            <td class="apply-tag" data-item-id="{{_id}}">
+                <pre>{{{locationToString data.availability.biomes}}}</pre>
+                <pre>{{{locationToString data.data.availability.biomes}}}</pre>
+            </td>
+        </tr>
+        {{/each}}
+        <!--currentPack.index-->
+    </table>
+
+    </div>
