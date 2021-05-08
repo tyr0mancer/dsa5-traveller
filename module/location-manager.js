@@ -361,7 +361,7 @@ export class LocationManager extends Application {
         try {
             this.settings.location = await Dsa5Availability.updateLocationFromTokenAndMap({})
         } catch (e) {
-            ui.notifications.error(e);
+            //ui.notifications.info("Bitte die Region manuell auswählen");
             return this._pickRegionDialog()
         }
         this.render()
@@ -394,7 +394,7 @@ export class LocationManager extends Application {
         types.forEach(x => {
             d.data.buttons[x] = {
                 label: 'als aktuellen Standort wählen',
-                callback: (html) => {
+                callback: async (html) => {
                     let regionSelection = []
                     for (let data of html.find('input[type=checkbox]')) {
                         if (!data.checked) continue
@@ -412,8 +412,9 @@ export class LocationManager extends Application {
                         biome: location.biome,
                         region: regionSelection
                     }
-                    game.settings.set(moduleName, 'location', newLocation)
                     this.settings.location = newLocation
+                    await game.settings.set(moduleName, 'location', newLocation)
+                    Hooks.call(moduleName + ".update-location", null)
                     this.render()
                 }
             }
@@ -454,6 +455,8 @@ export class LocationManager extends Application {
         if (typeof keys === 'string') keys = [keys]
         for (let key of keys)
             await game.settings.set(moduleName, key, this.settings[key])
+        if (keys.includes('location'))
+            Hooks.call(moduleName + ".update-location", null)
     }
 
 

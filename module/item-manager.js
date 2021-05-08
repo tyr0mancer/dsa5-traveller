@@ -12,6 +12,7 @@ export class ItemManager extends Application {
         this.tag = {}
         this.currentLocation = Dsa5Availability.currentLocation
         Hooks.on(moduleName + ".update-location", () => {
+            console.log(Dsa5Availability.currentLocation)
             this.currentLocation = Dsa5Availability.currentLocation
             this.render()
         });
