@@ -60,6 +60,9 @@ export class ItemManager extends Application {
         html.find("button[name=select-pack]").click(event => this._selectPack(event))
         html.find("select[name=select-pack]").change(event => this._selectPack(event))
 
+        html.find("button[name=calculate-availability]").click(event => this._calculateAvailability(event))
+
+
         // filter + sorter
         html.find(".filter").change((event) => this._setFilter(event))
         html.find("a[name=sorter]").click((event) => this._setSorter(event))
@@ -67,6 +70,7 @@ export class ItemManager extends Application {
         // tag / label
         html.find(".tag").change((event) => this._setTag(event))
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
+        html.find("button[name=check-current-availability]").click((event) => this._checkCurrentAvailability(event))
         html.find(".tag-entry").mousedown((event) => this._changeEntryWeight(event))
         html.find("button[name=set-tag-value]").click((event) => this._setTagValue(event))
 
@@ -78,15 +82,16 @@ export class ItemManager extends Application {
             this.render()
         })
         html.find("button[name=to-webp]").click(async (event) => {
-            for (let item of this.filteredIndex) {
-                if (item.data.data?.location !== undefined)
-                    await item.update({"data.location": null})
-                if (item.data.data?.data !== undefined)
-                    await item.update({"data.data": null})
-            }
-            this.render()
+            /*
+                        for (let item of this.filteredIndex) {
+                            if (item.data.data?.location !== undefined)
+                                await item.update({"data.location": null})
+                            if (item.data.data?.data !== undefined)
+                                await item.update({"data.data": null})
+                        }
+                        this.render()
+            */
         })
-
 
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
@@ -104,15 +109,19 @@ export class ItemManager extends Application {
         })
     }
 
+    _checkCurrentAvailability(event) {
+        console.clear()
+        console.log(this.tag.value)
+        console.log(this.filteredIndex)
+    }
+
     _applyCurrentLocation(event) {
         this.tag.value = this.currentLocation
-
         this.tag.value = {
             general: 3,
             regions: getRegionKeysFromLocation(this.currentLocation).map(r => [r, 3]),
             biomes: [[getBiomeKeyFromLocation(this.currentLocation), 3]] || []
         }
-
         this.render()
     }
 
@@ -323,7 +332,7 @@ export class ItemManager extends Application {
 
 
         // local item
-        if (item.data.data?.availability) {
+        if (item.data.data) {
             await item.update({"data.availability": newAvailability})
         } else {
             item.data.availability = newAvailability
@@ -347,16 +356,22 @@ export class ItemManager extends Application {
 
         if (isRightMB) {
             if (regionId && this.tag.value.regions[regionId][1]-- === 0)
-                this.tag.value.regions[regionId][1] = 0
-            //this.tag.value.regions.splice(regionId)
+                this.tag.value.regions.splice(regionId)
+            //this.tag.value.regions[regionId][1] = 0
+
             if (biomeId && this.tag.value.biomes[biomeId][1]-- === 0)
-                this.tag.value.biomes[biomeId][1] = 0
-            //this.tag.value.biomes.splice(biomeId)
+                this.tag.value.biomes.splice(biomeId)
+            //this.tag.value.biomes[biomeId][1] = 0
+
+            if (!biomeId && !regionId && this.tag.value.general-- === 0)
+                this.tag.value.general = 0
         } else {
             if (regionId && this.tag.value.regions[regionId][1]++ === 5)
                 this.tag.value.regions[regionId][1] = 5
             if (biomeId && this.tag.value.biomes[biomeId][1]++ === 5)
                 this.tag.value.biomes[biomeId][1] = 5
+            if (!biomeId && !regionId && this.tag.value.general++ === 5)
+                this.tag.value.general = 5
         }
 
         this.render()
@@ -413,8 +428,25 @@ export class ItemManager extends Application {
 
 
     }
+
+    async _calculateAvailability() {
+        console.clear()
+        for (let item of this.itemList)
+            await this._updateItemAvailability(item, {current: Math.floor(Math.random() * 6)})
+        await this._applyFilter()
+    }
+
+    async _updateItemAvailability(item, obj) {
+        if (item.data.data && !item.data.availability) {
+            let availability = item.data?.data?.availability || {}
+            mergeObject(availability, obj)
+            await item.update({"data.availability": availability})
+        } else if (item.data.availability) {
+            let availability = item.data.availability || {}
+            item.data.availability = mergeObject(availability, obj)
+            await this.currentPack.updateEntity(item);
+        }
+    }
+
 }
-
-
-
 

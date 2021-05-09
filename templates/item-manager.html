@@ -71,7 +71,9 @@
                                     {{/select}}
                                 </select>
                             </div>
-                            <div style="text-align: center; font-size: 2em">{{{showStarRating tag.value.general}}}</div>
+                            <div style="text-align: center; font-size: 2em" class="tag-entry">{{{showStarRating
+                                tag.value.general}}}
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -104,11 +106,10 @@
                     </div>
                 </div>
 
-<!--
-                <hr/>
-                <pre>{{stringify tag}}</pre>
--->
-
+                <!--
+                    <hr/>
+                    <pre>{{stringify tag}}</pre>
+                -->
             </main>
         </section>
 
@@ -135,6 +136,12 @@
                 </div>
             </main>
             <button type="button" name="apply-current-location">Als Tag / Label verwenden</button>
+            <div class="switch-checkbox">
+                <input id="show-availability" name="availability.show" class="filter"
+                       type="checkbox" {{checked filter.availability.show}}/>
+                <label for="show-availability" style="font-size: 0.9em; height:20px">Aktuelle Verfügbarkeit anzeigen</label>
+            </div>
+
         </section>
 
     </div>
@@ -148,19 +155,22 @@
         <table class="item-table">
             <tr>
                 <th>
-<!--
+                    <!--
                     <button name="filter-img" data-suffix=".png">filter png</button>
                     <button name="filter-img" data-suffix=".webp">filter webp</button>
                     <button name="to-webp">(danger!)</button>
--->
+                    -->
                 </th>
-                <th><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
+                <th style="width: 150px"><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
                 {{#if filter.description.show}}
-                <th style="width: 400px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3></th>
+                <th style="width: 300px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3></th>
                 {{/if}}
-                <th><h3>{{{sortingHeader sorting 'Verfügbarkeit' 'general'}}}</h3></th>
-                <th><h3><b>Regionen</b></h3></th>
-                <th><h3><b>Landschafts-Typen</b></h3></th>
+                {{#if filter.availability.show}}
+                <th><h3>{{{sortingHeader sorting 'Aktuelle Verfügbarkeit' 'aktuell'}}}</h3></th>
+                {{/if}}
+                <th><h3>{{{sortingHeader sorting 'Generelle Verfügbarkeit' 'general'}}}</h3></th>
+                <th><h3><b>Verfügbarkeit nach Regionen</b></h3></th>
+                <th><h3><b>Verfügbarkeit nach Landschafts-Typen</b></h3></th>
             </tr>
             <tr>
                 <td>
@@ -183,6 +193,9 @@
                         <label for="description.keyword">Suchbegriffe</label>
                     </div>
                 </td>
+                {{/if}}
+                {{#if filter.availability.show}}
+                <td><button name="calculate-availability" type="button">Neu berechnen</button></td>
                 {{/if}}
                 <td>
                     <div class="col-2">
@@ -268,18 +281,24 @@
                     {{{data.data.description.value}}}
                 </td>
                 {{/if}}
+                {{#if ../filter.availability.show}}
+                <td>
+                    <div style="font-size: 2em;"> {{{showStarRating data.availability.current}}}</div>
+                    <div style="font-size: 2em;"> {{{showStarRating data.data.availability.current}}}</div>
+                </td>
+                {{/if}}
 
                 <td class="apply-tag" data-item-id="{{_id}}">
                     <div style="font-size: 2em;"> {{{showStarRating data.availability.general}}}</div>
                     <div style="font-size: 2em;"> {{{showStarRating data.data.availability.general}}}</div>
                 </td>
 
-<!--
-                <td colspan="2">
-                    <p>{{stringify data.data.location}}</p>
-                    <p>{{stringify data.data.data}}</p>
-                </td>
--->
+                <!--
+                                <td colspan="2">
+                                    <p>{{stringify data.data.location}}</p>
+                                    <p>{{stringify data.data.data}}</p>
+                                </td>
+                -->
 
 
                 <td class="apply-tag" data-item-id="{{_id}}">
