@@ -8,7 +8,7 @@ export class ItemManager extends Application {
         this.itemCompendiaOptions = game.packs.filter(p => p.metadata.entity === 'Item')
         this.itemFolderOptions = game.folders.filter(f => (f.data.type === "Item"));
         this.hideFiltered = false
-        this.filter = {img: {}, name: {}, description: {show: true}, general: {}, regions: {}, biomes: {},}
+        this.filter = {img: {}, name: {}, description: {show: false}, general: {}, regions: {}, biomes: {},}
         this.tag = {}
         this.sorting = {key: 'name', direction: 1}
         this.currentLocation = Dsa5Availability.currentLocation
@@ -93,7 +93,8 @@ export class ItemManager extends Application {
     }
 
     _applyCurrentLocation(event) {
-        alert('todo: _applyCurrentLocation(event)')
+        let cloc = JSON.stringify(Dsa5Availability.currentLocation)
+        alert('todo: _applyCurrentLocation(event): ' + cloc)
     }
 
     async _setFilter(event) {
@@ -126,7 +127,6 @@ export class ItemManager extends Application {
             else if (b > a)
                 result = -1;
             if (direction) result *= direction
-            console.log(a, b, key, result)
             return result
         })
         this.render()
@@ -148,32 +148,67 @@ export class ItemManager extends Application {
                 }
 
                 // checking for availability now
-                let {availability} = item.data
-                if (availability === undefined) availability = item.data?.data?.availability
+                const availability = item.data?.availability || item.data?.data?.availability
 
                 // general availability
                 if (this.filter?.general?.max && (availability?.general > this.filter.general.max)) return false
                 if (this.filter?.general?.min && (!availability?.general || availability.general < this.filter.general.min)) return false
 
-
-                /*
-                    let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
-                    if (this.filter.omit_regions && availability?.regions?.length) return false
-                    if (this.filter.region) {
-                        return (availability?.regions.find(e => e[0].toLowerCase().includes(this.filter.region.toLowerCase())))
+                // regional availability
+                if (this.filter?.regions?.filtertype) {
+                    // check if any region definition at all
+                    if (this.filter.regions.filtertype === 'empty')
+                        return (!availability?.regions || availability.regions.length === 0)
+                    if (this.filter.regions.filtertype === 'defined')
+                        return (availability?.regions && availability.regions.length > 0)
+                    // check for specific region
+                    let foundAny = false
+                    for (let regionKey of this.filter?.regions?.keywords.toLowerCase().split(',')) {
+                        if (availability?.regions.find(r => r[0].includes(regionKey))) {
+                            if (this.filter.regions.filtertype === 'any') {
+                                foundAny = true
+                                break
+                            }
+                            if (this.filter.regions.filtertype === 'none')
+                                return false
+                        } else {
+                            if (this.filter.regions.filtertype === 'all')
+                                return false
+                        }
                     }
-                    if (this.filter.biome)
-                        return (availability?.biomes.find(e => e[0] === this.filter.biome))
-                */
+                    if (this.filter.regions.filtertype === 'any' && !foundAny)
+                        return false
+                }
+
+                // biome availability
+                if (this.filter?.biomes?.filtertype) {
+                    // check if any region definition at all
+                    if (this.filter.biomes.filtertype === 'empty')
+                        return (!availability?.biomes || availability.biomes.length === 0)
+                    if (this.filter.biomes.filtertype === 'defined')
+                        return (availability?.biomes && availability.biomes.length > 0)
+                    // check for specific region
+                    let foundAny = false
+                    for (let regionKey of this.filter?.biomes?.keywords.toLowerCase().split(',')) {
+                        if (availability?.biomes.find(r => r[0].includes(regionKey))) {
+                            if (this.filter.biomes.filtertype === 'any') {
+                                foundAny = true
+                                break
+                            }
+                            if (this.filter.biomes.filtertype === 'none')
+                                return false
+                        } else {
+                            if (this.filter.biomes.filtertype === 'all')
+                                return false
+                        }
+                    }
+                    if (this.filter.biomes.filtertype === 'any' && !foundAny)
+                        return false
+                }
+
                 return true
             }
         )
-        /*
-                const filteredIdList = this.filteredIndex?.map(item => item._id)
-                this.mainIndex = !this.hideFiltered
-                    ? this.itemList
-                    : this.itemList?.filter((item) => !filteredIdList.includes(item._id))
-        */
         this._applySort()
     }
 
