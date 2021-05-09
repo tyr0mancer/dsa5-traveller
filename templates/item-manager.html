@@ -147,7 +147,13 @@
 
         <table class="item-table">
             <tr>
-                <th></th>
+                <th>
+<!--
+                    <button name="filter-img" data-suffix=".png">filter png</button>
+                    <button name="filter-img" data-suffix=".webp">filter webp</button>
+                    <button name="to-webp">(danger!)</button>
+-->
+                </th>
                 <th><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
                 {{#if filter.description.show}}
                 <th style="width: 400px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3></th>
@@ -267,6 +273,15 @@
                     <div style="font-size: 2em;"> {{{showStarRating data.availability.general}}}</div>
                     <div style="font-size: 2em;"> {{{showStarRating data.data.availability.general}}}</div>
                 </td>
+
+<!--
+                <td colspan="2">
+                    <p>{{stringify data.data.location}}</p>
+                    <p>{{stringify data.data.data}}</p>
+                </td>
+-->
+
+
                 <td class="apply-tag" data-item-id="{{_id}}">
                     {{#each data.availability.regions}}
                     <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
@@ -283,6 +298,7 @@
                     <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
                     {{/each}}
                 </td>
+
             </tr>
             {{/each}}
             <!--currentPack.index-->

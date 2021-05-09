@@ -1,7 +1,6 @@
 import {moduleName} from "../dsa5-traveller.js";
 import Dsa5Availability, {getBiomeKeyFromLocation, getRegionKeysFromLocation} from "./dsa5-availability.js";
 
-
 export class ItemManager extends Application {
 
     constructor() {
@@ -70,6 +69,23 @@ export class ItemManager extends Application {
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
         html.find(".tag-entry").mousedown((event) => this._changeEntryWeight(event))
         html.find("button[name=set-tag-value]").click((event) => this._setTagValue(event))
+
+        html.find("button[name=filter-img]").click((event) => {
+            const suffix = $(event.currentTarget).attr("data-suffix")
+            this.filteredIndex = this.itemList.filter(i => {
+                return i.img.endsWith(suffix)
+            })
+            this.render()
+        })
+        html.find("button[name=to-webp]").click(async (event) => {
+            for (let item of this.filteredIndex) {
+                if (item.data.data?.location !== undefined)
+                    await item.update({"data.location": null})
+                if (item.data.data?.data !== undefined)
+                    await item.update({"data.data": null})
+            }
+            this.render()
+        })
 
 
         html.find("td.apply-tag").mousedown((event) => {
@@ -274,7 +290,7 @@ export class ItemManager extends Application {
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
 
-        const mergeArray = (oldArray=[], newArray=[]) => {
+        const mergeArray = (oldArray = [], newArray = []) => {
             let result = oldArray
             for (let entry of newArray) {
                 let existingEntry = result.find(e => e[0] === entry[0])
