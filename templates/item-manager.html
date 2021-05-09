@@ -74,8 +74,6 @@
                             {{{showStarRating tag.value.general}}}
                         </div>
                     </div>
-
-
                     <div>
                         <div class="switch-checkbox">
                             <input id="overwrite.regions" name="overwrite.regions" class="tag"
@@ -83,12 +81,13 @@
                             <label for="overwrite.regions">Regionen überschreiben</label>
                         </div>
                         <button name="set-regions-tag">Regionen bearbeiten</button>
-                        {{#each tag.value.regions}}
-                        <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                        {{#each tag.value.regions as |entry id|}}
+                        <div class="tag-entry" data-region-id="{{id}}">
+                            {{{showStarRating entry}}}
+                            <span>{{#index_of entry 0}}{{/index_of}}</span>
+                        </div>
                         {{/each}} <!--tag.value.regions-->
                     </div>
-
-
                     <div>
                         <div class="switch-checkbox">
                             <input id="overwrite.biomes" name="overwrite.biomes" class="tag"
@@ -96,17 +95,18 @@
                             <label for="overwrite.biomes">Landschafts-Typen überschreiben</label>
                         </div>
                         <button name="set-regions-tag">Landschafts-Typen bearbeiten</button>
-                        {{#each tag.value.biomes}}
-                        <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}
+                        {{#each tag.value.biomes as |entry id|}}
+                        <div class="tag-entry" data-biome-id="{{id}}">
+                            {{{showStarRating entry}}}
+                            <span>{{#index_of entry 0}}{{/index_of}}</span>
                         </div>
-                        {{/each}} <!--tag.value.regions-->
+                        {{/each}} <!--tag.value.biomes-->
                     </div>
                 </div>
 
-                <!--
-                                <hr/>
-                                <pre>{{stringify tag}}</pre>
-                -->
+                <hr/>
+                <pre>{{stringify tag}}</pre>
+
             </main>
         </section>
 

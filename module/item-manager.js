@@ -1,5 +1,6 @@
 import {moduleName} from "../dsa5-traveller.js";
-import Dsa5Availability from "./dsa5-availability.js";
+import Dsa5Availability, {getBiomeKeyFromLocation, getRegionKeysFromLocation} from "./dsa5-availability.js";
+
 
 export class ItemManager extends Application {
 
@@ -68,6 +69,9 @@ export class ItemManager extends Application {
         // tag / label
         html.find(".tag").change((event) => this._setTag(event))
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
+        html.find(".tag-entry").mousedown((event) => this._changeEntryWeight(event))
+
+
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
             let isRightMB = false;
@@ -86,6 +90,13 @@ export class ItemManager extends Application {
 
     _applyCurrentLocation(event) {
         this.tag.value = this.currentLocation
+
+        this.tag.value = {
+            general: 3,
+            regions: getRegionKeysFromLocation(this.currentLocation).map(r => [r, 3]),
+            biomes: [[getBiomeKeyFromLocation(this.currentLocation), 3]] || []
+        }
+
         this.render()
     }
 
@@ -243,10 +254,19 @@ export class ItemManager extends Application {
     }
 
 
+    _setSorter(event) {
+        let key = $(event.currentTarget).attr("data-sort-key")
+        if (this.sorting.key === key)
+            this.sorting.direction *= -1
+        else
+            this.sorting = {key, direction: 1}
+        this._applySort()
+    }
+
     async _readTag(event) {
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
-        let availability = item.data?.data?.availability || item.data?.availability
+        let availability = duplicate(item.data?.data?.availability || item.data?.availability)
         if (!availability) return
         this.tag.value = availability
         this.render()
@@ -265,12 +285,33 @@ export class ItemManager extends Application {
         await this._applyFilter()
     }
 
-    _setSorter(event) {
-        let key = $(event.currentTarget).attr("data-sort-key")
-        if (this.sorting.key === key)
-            this.sorting.direction *= -1
-        else
-            this.sorting = {key, direction: 1}
-        this._applySort()
+    _changeEntryWeight(event) {
+        //event.preventDefault();
+        const regionId = $(event.currentTarget).attr("data-region-id")
+        const biomeId = $(event.currentTarget).attr("data-biome-id")
+
+        let isRightMB = false;
+        if ("which" in event) { // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+            isRightMB = event.which == 3;
+        } else if ("button" in event) { // IE, Opera
+            isRightMB = event.button == 2;
+        }
+
+        if (isRightMB) {
+            if (regionId && this.tag.value.regions[regionId][1]-- === 0)
+                this.tag.value.regions[regionId][1] = 0
+            //this.tag.value.regions.splice(regionId)
+            if (biomeId && this.tag.value.biomes[biomeId][1]-- === 0)
+                this.tag.value.biomes[biomeId][1] = 0
+            //this.tag.value.biomes.splice(biomeId)
+        } else {
+            if (regionId && this.tag.value.regions[regionId][1]++ === 5)
+                this.tag.value.regions[regionId][1] = 5
+            if (biomeId && this.tag.value.biomes[biomeId][1]++ === 5)
+                this.tag.value.biomes[biomeId][1] = 5
+        }
+
+        this.render()
+
     }
 }
