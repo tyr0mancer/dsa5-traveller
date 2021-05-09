@@ -22,11 +22,23 @@ Hooks.once('init', () => {
     console.log(moduleName, "| Initializing")
     registerSettings()
 
-    Handlebars.registerHelper('locationToString', function (location, opts) {
+    Handlebars.registerHelper('locationToString', function (location) {
         let result = ""
         if (location && Array.isArray(location))
             for (let entry of location.sort((a, b) => b[1] - a[1]))
-                result += `<p><b>${entry[1]}</b> <i>${entry[0]}</i></p>`
+                result += `<p>${entry[1]} <i>${entry[0]}</i></p>`
+        return result
+    });
+
+    Handlebars.registerHelper('sortingHeader', function (sorting, name, key) {
+        if (!key) key = name.toLowerCase()
+        let result = `<a name="sorter" data-sort-key="${key}"><b>${name}</b></a>`
+        if (sorting.key === key) {
+            if (sorting.direction === 1)
+                result = "<i class=\"fas fa-sort-up\"></i> " + result
+            else
+                result = "<i class=\"fas fa-sort-down\"></i> " + result
+        }
         return result
     });
 

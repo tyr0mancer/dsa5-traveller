@@ -1,28 +1,6 @@
 <section class="meistertools dsa5-traveller content">
 
-    <div class="col-2" style="grid-template-columns: auto 300px;">
-        <h1>Verfügbarkeiten verwalten</h1>
-
-        <!-- <section class="round-box no-header"> -->
-        <section>
-
-            {{#each currentLocation.region}}
-            <div>
-                <b>{{name}}</b>
-                {{#each index}}
-                <span>{{name}}</span>
-                {{/each}} <!--index-->
-            </div>
-            {{/each}} <!--settings.location-->
-            <div>
-                <b>Landschafts-Typ:</b>
-                <span>{{currentLocation.biome.name}}</span>
-            </div>
-        </section>
-
-    </div>
-
-    <div class="col-3" style="grid-template-columns: 200px auto 300px;">
+    <div class="col-3" style="grid-template-columns: 200px auto 200px">
 
         <!-- ---------------------
         Col 1 - Datenquelle
@@ -32,7 +10,7 @@
                 <h2>Datenquelle</h2>
             </header>
             <div class="select-css">
-                <select id="select-item-pack" name="select-pack" style="width: 150px">
+                <select id="select-item-pack" name="select-pack">
                     {{#select currentPack.collection}}
                     <option value="">-&#45;&#45;</option>
                     {{#each itemCompendiaOptions}}
@@ -43,7 +21,7 @@
                 <label for="select-item-pack">Aus Kompendium</label>
             </div>
             <div class="select-css">
-                <select id="select-item-folder" name="select-folder" style="width: 150px">
+                <select id="select-item-folder" name="select-folder">
                     {{#select currentFolder._id}}
                     <option value="">---</option>
                     {{#each itemFolderOptions}}
@@ -53,52 +31,13 @@
                 </select>
                 <label for="select-item-folder">Lokale Ordner</label>
             </div>
+            <button type="button" name="apply-filter"><i class="fas fa-sync-alt"></i> neu laden</button>
+            <button type="button" name="reset-filter" class="reset"><i class="far fa-trash-alt"></i> reset</button>
         </section>
 
 
         <!-- ---------------------
-        Col 2 - Filter
-        --------------------- -->
-        <section class="round-box">
-            <header>
-                <h2>Filter</h2>
-            </header>
-            <main>
-                <div class="switch-checkbox">
-                    <input id="hide-filtered" name="hide-filtered" type="checkbox" {{checked hideFiltered}}/>
-                    <label for="hide-filtered">Gefilterte Auswahl aus Hauptansicht entfernen</label>
-                </div>
-
-                <div class="switch-checkbox">
-                    <input id="omit-general-availability" name="omit_general" class="filter" type="checkbox" {{checked
-                           filter.omit_general}}/>
-                    <label for="omit-general-availability">Nur Items ohne allgemeine Verfügbarkeit anzeigen</label>
-                </div>
-                <div class="col-2">
-                    <div class="switch-checkbox">
-                        <input id="omit-regions" name="omit_regions" class="filter" type="checkbox" {{checked
-                               filter.omit_regions}}/>
-                        <label for="omit-regions">Nur Items ohne Region</label>
-                    </div>
-                    <input value="{{filter.region}}" name="region" class="filter" type="text"/>
-
-                    <div class="switch-checkbox">
-                        <input id="omit-biomes" name="omit_biomes" class="filter" type="checkbox" {{checked
-                               filter.omit_biomes}}/>
-                        <label for="omit-biomes">Nur Items ohne Biome</label>
-                    </div>
-                    <input value="{{filter.biome}}" name="biome" class="filter" type="text"/>
-
-                </div>
-                <hr/>
-                <button type="button" name="filter-apply">Filter anwenden</button>
-                <button type="button" name="filter-reset" class="reset">Filter zurück setzen</button>
-            </main>
-        </section>
-
-
-        <!-- ---------------------
-        Col 3 - Label / Tag
+        Col 2 - Label / Tag
         --------------------- -->
         <section class="round-box">
             <header>
@@ -106,103 +45,188 @@
             </header>
             <main>
                 <div class="switch-checkbox">
-                    <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked
-                           tag.overwrite}}/>
+                    <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked tag.overwrite}}/>
                     <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
                 </div>
-                <div class="select-css">
-                    <select id="select-general-availability" name="general" class="tag">
-                        {{#select tag.general}}
-                        <option></option>
-                        <option value="5">sehr häufig</option>
-                        <option value="4">häufig</option>
-                        <option value="3">normal</option>
-                        <option value="2">selten</option>
-                        <option value="1">fast nie</option>
-                        <option value="0">nie verfügbar</option>
-                        {{/select}}
-                    </select>
-                    <label for="select-general-availability">Allgemeine Verfügbarkeit</label>
+                <pre>{{stringify tag}}</pre>
+
+
+                <div class="switch-checkbox">
+                    <input id="show-description" name="description.show" class="filter"
+                           type="checkbox" {{checked filter.description.show}}/>
+                    <label for="show-description">Beschreibung anzeigen</label>
                 </div>
-                <table>
-                    <tr>
-                        <th>Verfügbarkeit</th>
-                        <th>Regionen</th>
-                        <th>Landschafts-<br/>Typen</th>
-                    </tr>
-                    <tr>
-                        <td>sehr häufig</td>
-                        <td><input name="region5" class="tag" value="{{tag.region5}}" type="text"/></td>
-                        <td><input name="biome5" class="tag" value="{{tag.biome5}}" type="text"/></td>
-                    </tr>
-                    <tr>
-                        <td>häufig</td>
-                        <td><input name="region4" class="tag" value="{{tag.region4}}" type="text"/></td>
-                        <td><input name="biome4" class="tag" value="{{tag.biome4}}" type="text"/></td>
-                    </tr>
-                    <tr>
-                        <td>normal</td>
-                        <td><input name="region4" class="tag" value="{{tag.region3}}" type="text"/></td>
-                        <td><input name="biome4" class="tag" value="{{tag.biome3}}" type="text"/></td>
-                    </tr>
-                    <tr>
-                        <td>selten</td>
-                        <td><input name="region4" class="tag" value="{{tag.region2}}" type="text"/></td>
-                        <td><input name="biome4" class="tag" value="{{tag.biome2}}" type="text"/></td>
-                    </tr>
-                    <tr>
-                        <td>fast nie</td>
-                        <td><input name="region4" class="tag" value="{{tag.region1}}" type="text"/></td>
-                        <td><input name="biome4" class="tag" value="{{tag.biome1}}" type="text"/></td>
-                    </tr>
-                    <tr>
-                        <td>nie verfügbar</td>
-                        <td><input name="region4" class="tag" value="{{tag.region0}}" type="text"/></td>
-                        <td><input name="biome4" class="tag" value="{{tag.biome0}}" type="text"/></td>
-                    </tr>
-                </table>
+
             </main>
         </section>
+
+
+        <!-- ---------------------
+        Col 3 - Current Location
+        --------------------- -->
+        <section class="round-box">
+            <header>
+                <h2>Aktuell</h2>
+            </header>
+            <main>
+                {{#each currentLocation.region}}
+                <div>
+                    <b>{{name}}</b>
+                    {{#each index}}
+                    <span>{{name}}</span>
+                    {{/each}} <!--index-->
+                </div>
+                {{/each}} <!--settings.location-->
+                <div>
+                    <b>Landschafts-Typ:</b>
+                    <span>{{currentLocation.biome.name}}</span>
+                </div>
+            </main>
+            <button type="button" name="apply-current-location">Als Tag verwenden</button>
+        </section>
+
     </div>
 
 
     <!-- ---------------------
     Row 2 items table
     --------------------- -->
+    <div>
 
-    <table class="item-table">
-        <tr>
-            <th>Bild</th>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Verfügbarkeit</th>
-            <th>Regionen</th>
-            <th>Landschafts-Typen</th>
-        </tr>
+        <table class="item-table">
+            <tr>
+                <th></th>
+                <th><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
+                {{#if filter.description.show}}
+                <th><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3> </th>
+                {{/if}}
+                <th><h3>{{{sortingHeader sorting 'Allgemeine<br/>Verfügbarkeit' 'general'}}}</h3></th>
+                <th><h3><b>Regionen</b></h3></th>
+                <th><h3><b>Landschafts-Typen</b></h3></th>
+            </tr>
 
-        {{#each itemsLeft}}
-        <tr class="update-location">
-            <td><img src="{{img}}" style="height: 48px;width: 48px"/></td>
-            <td><h3>{{name}}</h3></td>
-            <td>
-                {{{data.description.value}}}
-                {{{data.data.description.value}}}
-            </td>
-            <td class="apply-tag" data-item-id="{{_id}}">
-                <pre>{{data.availability.general}}</pre>
-                <pre>{{data.data.availability.general}}</pre>
-            </td>
-            <td class="apply-tag" data-item-id="{{_id}}">
-                <pre>{{{locationToString data.availability.regions}}}</pre>
-                <pre>{{{locationToString data.data.availability.regions}}}</pre>
-            </td>
-            <td class="apply-tag" data-item-id="{{_id}}">
-                <pre>{{{locationToString data.availability.biomes}}}</pre>
-                <pre>{{{locationToString data.data.availability.biomes}}}</pre>
-            </td>
-        </tr>
-        {{/each}}
-        <!--currentPack.index-->
-    </table>
+            <tr>
+                <th>
+                    <pre>{{stringify filter.img}}</pre>
+                </th>
+                <th>
+                    <div class="boxed-input">
+                        <input id="name.keyword" value="{{filter.name.keyword}}" name="name.keyword" class="filter" type="text"/>
+                        <label for="name.keyword">Suchbegriffe</label>
+                    </div>
+                    <pre>{{stringify filter.name}}</pre>
+                </th>
+                {{#if filter.description.show}}
+                <th>
+                    <div class="boxed-input">
+                        <input id="description.keyword" value="{{filter.description.keyword}}" name="description.keyword" class="filter"
+                               type="text"/>
+                        <label for="description.keyword">Suchbegriffe</label>
+                    </div>
 
+                    <pre>{{stringify filter.description}}</pre>
+                </th>
+                {{/if}}
+                <th>
+                    <div class="col-2">
+                        <div class="select-css">
+                            <select id="filter-general-min" name="general.min" class="filter">
+                                {{#select filter.general.min}}
+                                <option value=""></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                {{/select}}
+                            </select>
+                            <label for="filter-general-min">min</label>
+                        </div>
+                        <div class="select-css">
+                            <select id="filter-general-max" name="general.max" class="filter">
+                                {{#select filter.general.max}}
+                                <option value=""></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                {{/select}}
+                            </select>
+                            <label for="filter-general-max">max</label>
+                        </div>
+                    </div>
+                    <pre>{{stringify filter.general}}</pre>
+                </th>
+                <th>
+                    <div class="col-2">
+                        <div class="select-css">
+                            <select id="regions-filter-type" class="filter" name="regions.filtertype">
+                                {{#select filter.regions.filtertype}}
+                                <option value="any">mind. eine Region passt</option>
+                                <option value="all">alle Regionen passen</option>
+                                <option value="none">keine Region passt</option>
+                                <option value="empty">item ist keiner Region zugeordnet</option>
+                                <option value="defined">item ist irgend einer Region zugeordnet</option>
+                                {{/select}}
+                            </select>
+                            <label for="regions-filter-type">Filter-Optionen</label>
+                        </div>
+                        <div class="boxed-input">
+                            <input id="regions.keywords" name="regions.keywords" class="filter" type="text"
+                                   value="{{filter.regions.keywords}}" placeholder="Suchbegriffe durch , trennen"/>
+                            <label for="regions.keywords">Region Keys</label>
+                        </div>
+                    </div>
+                    <pre>{{stringify filter.regions}}</pre>
+                </th>
+                <th>
+                    <div class="col-2">
+                        <div class="select-css">
+                            <select id="biome-filter-type" class="filter" name="biomes.filtertype">
+                                {{#select filter.biomes.filtertype}}
+                                <option value="any">mind. ein LS Typ passt</option>
+                                <option value="all">alle LS Typen passen</option>
+                                <option value="none">kein LS Typ passt</option>
+                                <option value="empty">item ist keinem LS Typ zugeordnet</option>
+                                <option value="defined">item ist irgend einem LS Typ zugeordnet</option>
+                                {{/select}}
+                            </select>
+                            <label for="biome-filter-type">Filter-Optionen</label>
+                        </div>
+                        <div class="boxed-input">
+                            <input id="biomes.keywords" name="biomes.keywords" class="filter" type="text"
+                                   value="{{filter.biomes.keywords}}" placeholder="Suchbegriffe durch , trennen"/>
+                            <label for="biomes.keywords">Biome Keys</label>
+                        </div>
+                    </div>
+                    <pre>{{stringify filter.biomes}}</pre>
+                </th>
+            </tr>
+
+            {{#each filteredIndex}}
+            <tr class="update-location">
+                <td><img src="{{img}}" style="height: 48px;width: 48px"/></td>
+                <td><h3>{{name}}</h3></td>
+
+                {{#if ../filter.description.show}}
+                <td>
+                    {{{data.description.value}}}
+                    {{{data.data.description.value}}}
+                </td>
+                {{/if}}
+
+                <td class="apply-tag" data-item-id="{{_id}}">
+                    <pre>{{data.availability.general}}</pre>
+                    <pre>{{data.data.availability.general}}</pre>
+                </td>
+                <td class="apply-tag" data-item-id="{{_id}}">
+                    <pre>{{{locationToString data.availability.regions}}}</pre>
+                    <pre>{{{locationToString data.data.availability.regions}}}</pre>
+                </td>
+                <td class="apply-tag" data-item-id="{{_id}}">
+                    <pre>{{{locationToString data.availability.biomes}}}</pre>
+                    <pre>{{{locationToString data.data.availability.biomes}}}</pre>
+                </td>
+            </tr>
+            {{/each}}
+            <!--currentPack.index-->
+        </table>
     </div>
+</section>

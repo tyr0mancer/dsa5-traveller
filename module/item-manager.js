@@ -8,8 +8,9 @@ export class ItemManager extends Application {
         this.itemCompendiaOptions = game.packs.filter(p => p.metadata.entity === 'Item')
         this.itemFolderOptions = game.folders.filter(f => (f.data.type === "Item"));
         this.hideFiltered = false
-        this.filter = {}
+        this.filter = {img: {}, name: {}, description: {show: true}, general: {}, regions: {}, biomes: {},}
         this.tag = {}
+        this.sorting = {key: 'name', direction: 1}
         this.currentLocation = Dsa5Availability.currentLocation
         Hooks.on(moduleName + ".update-location", () => {
             console.log(Dsa5Availability.currentLocation)
@@ -43,30 +44,38 @@ export class ItemManager extends Application {
             hideFiltered: this.hideFiltered,
             filter: this.filter,
             tag: this.tag,
-            itemsLeft: this.mainIndex,
-            itemsRight: this.filteredIndex,
+            sorting: this.sorting,
+            mainIndex: this.itemList,
+            filteredIndex: this.filteredIndex,
             currentLocation: this.currentLocation
         }
     }
 
-
     async activateListeners(html) {
         super.activateListeners(html);
         html.find("nav.help-icon").click((event) => $('.help-info.help-' + $(event.currentTarget).attr("data-help")).toggle())
-        html.find("button[name=filter-apply]").click(() => this._applyFilter())
-        html.find("button[name=filter-reset]").click(() => this._resetFilter())
+        html.find("a[name=sorter]").click((event) => {
+            let key = $(event.currentTarget).attr("data-sort-key")
+            if (this.sorting.key === key)
+                this.sorting.direction *= -1
+            else
+                this.sorting = {key, direction: 1}
+            this._applySort()
+        })
+
+        html.find("button[name=apply-filter]").click(() => this._applyFilter())
+        html.find("button[name=reset-filter]").click(() => this._resetFilter())
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
         html.find("select[name=select-pack]").change(event => this._selectPack(event))
         html.find("input[name=hide-filtered]").change(event => {
             this.hideFiltered = event.currentTarget.checked === true
             this._applyFilter()
         })
-        html.find("input.filter[type=text]").change((event) => this.filter[event.currentTarget.name] = event.currentTarget.value)
-        html.find("input.filter[type=checkbox]").change((event) => this.filter[event.currentTarget.name] = event.currentTarget.checked === true)
+        html.find(".filter").change((event) => this._setFilter(event))
         html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
-        //html.find("tr.apply-tag").click((event) => this._applyTag(event))
+        html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
             let isRightMB = false;
@@ -80,39 +89,92 @@ export class ItemManager extends Application {
             } else {
                 this._applyTag(event)
             }
-
         })
     }
 
+    _applyCurrentLocation(event) {
+        alert('todo: _applyCurrentLocation(event)')
+    }
+
+    async _setFilter(event) {
+        let obj = {}
+        obj[event.currentTarget.name] = (event.currentTarget.type === "checkbox")
+            ? event.currentTarget.checked === true
+            : event.currentTarget.value
+        this.filter = mergeObject(this.filter, expandObject(obj))
+        this._applySort()
+    }
+
+    _applySort(event) {
+        let {key, direction} = this.sorting
+        this.filteredIndex = this.filteredIndex?.sort((e1, e2) => {
+            let a
+            let b
+            if (key === 'description') {
+                a = (e1.data?.description?.value || e1.data?.data?.description?.value) ? 1 : 0
+                b = (e2.data?.description?.value || e2.data?.data?.description?.value) ? 1 : 0
+            } else if (key === 'general') {
+                a = e1.data?.availability?.general || e1.data?.data?.availability?.general || -1
+                b = e2.data?.availability?.general || e1.data?.data?.availability?.general || -1
+            } else {
+                a = e1[key]
+                b = e2[key]
+            }
+            let result = 0
+            if (a > b)
+                result = 1;
+            else if (b > a)
+                result = -1;
+            if (direction) result *= direction
+            console.log(a, b, key, result)
+            return result
+        })
+        this.render()
+    }
 
     async _applyFilter() {
         this.filteredIndex = this.itemList?.filter(item => {
                 if (!this.filter || !Object.keys(this.filter).length)
-                    return false
-                let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
-                /*
-                    // temporary hack to migrate from old format
-                    if (this.filter.omit_general) {
-                        if (item.data.location) return true
+                    return true
+
+                // filter name
+                if (this.filter?.name?.keyword && !item.name.toLowerCase().includes(this.filter.name.keyword.toLowerCase())) return false
+
+                // filter description
+                if (this.filter?.description?.keyword) {
+                    const description = item.data?.description?.value || item.data?.data?.description?.value
+                    if (!description || !description.toLowerCase().includes(this.filter.description.keyword.toLowerCase()))
                         return false
-                    }
-                */
-                if (this.filter.omit_general && availability?.general) return false
-                if (this.filter.omit_biomes && availability?.biomes?.length) return false
-                if (this.filter.omit_regions && availability?.regions?.length) return false
-                if (this.filter.region) {
-                    return (availability?.regions.find(e => e[0].toLowerCase().includes(this.filter.region.toLowerCase())))
                 }
-                if (this.filter.biome)
-                    return (availability?.biomes.find(e => e[0] === this.filter.biome))
+
+                // checking for availability now
+                let {availability} = item.data
+                if (availability === undefined) availability = item.data?.data?.availability
+
+                // general availability
+                if (this.filter?.general?.max && (availability?.general > this.filter.general.max)) return false
+                if (this.filter?.general?.min && (!availability?.general || availability.general < this.filter.general.min)) return false
+
+
+                /*
+                    let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
+                    if (this.filter.omit_regions && availability?.regions?.length) return false
+                    if (this.filter.region) {
+                        return (availability?.regions.find(e => e[0].toLowerCase().includes(this.filter.region.toLowerCase())))
+                    }
+                    if (this.filter.biome)
+                        return (availability?.biomes.find(e => e[0] === this.filter.biome))
+                */
                 return true
             }
         )
-        const filteredIdList = this.filteredIndex?.map(item => item._id)
-        this.mainIndex = !this.hideFiltered
-            ? this.itemList
-            : this.itemList?.filter((item) => !filteredIdList.includes(item._id))
-        this.render()
+        /*
+                const filteredIdList = this.filteredIndex?.map(item => item._id)
+                this.mainIndex = !this.hideFiltered
+                    ? this.itemList
+                    : this.itemList?.filter((item) => !filteredIdList.includes(item._id))
+        */
+        this._applySort()
     }
 
     async _resetFilter() {
@@ -207,4 +269,5 @@ export class ItemManager extends Application {
         }
         await this._applyFilter()
     }
+
 }
