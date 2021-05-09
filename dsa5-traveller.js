@@ -63,8 +63,10 @@ Hooks.once('init', () => {
         return ''
     });
 
-    Handlebars.registerHelper('index_of', function(context,ndx) {
-        return context[ndx];
+    Handlebars.registerHelper('index_of', function (context, ndx) {
+        if (context && context.length > ndx)
+            return context[ndx];
+        return ''
     });
 })
 
