@@ -1,5 +1,10 @@
 import {moduleName} from "../dsa5-traveller.js";
-import Dsa5Availability, {getBiomeKeyFromLocation, getRegionKeysFromLocation} from "./dsa5-availability.js";
+import Dsa5Availability, {
+    getBiomeKeyFromLocation,
+    getRegionKeysFromLocation,
+    getItemAvailability
+} from "./dsa5-availability.js";
+
 
 export class ItemManager extends Application {
 
@@ -70,7 +75,6 @@ export class ItemManager extends Application {
         // tag / label
         html.find(".tag").change((event) => this._setTag(event))
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
-        html.find("button[name=check-current-availability]").click((event) => this._checkCurrentAvailability(event))
         html.find(".tag-entry").mousedown((event) => this._changeEntryWeight(event))
         html.find("button[name=set-tag-value]").click((event) => this._setTagValue(event))
 
@@ -107,12 +111,6 @@ export class ItemManager extends Application {
                 this._applyTag(event)
             }
         })
-    }
-
-    _checkCurrentAvailability(event) {
-        console.clear()
-        console.log(this.tag.value)
-        console.log(this.filteredIndex)
     }
 
     _applyCurrentLocation(event) {
@@ -155,6 +153,9 @@ export class ItemManager extends Application {
             } else if (key === 'general') {
                 a = e1.data?.availability?.general || e1.data?.data?.availability?.general || -1
                 b = e2.data?.availability?.general || e2.data?.data?.availability?.general || -1
+            } else if (key === 'current') {
+                a = e1.data?.availability?.current || e1.data?.data?.availability?.current || -1
+                b = e2.data?.availability?.current || e2.data?.data?.availability?.current || -1
             } else {
                 a = e1[key]
                 b = e2[key]
@@ -430,9 +431,17 @@ export class ItemManager extends Application {
     }
 
     async _calculateAvailability() {
-        console.clear()
-        for (let item of this.itemList)
-            await this._updateItemAvailability(item, {current: Math.floor(Math.random() * 6)})
+        for (let item of this.itemList) {
+/*
+            let applicableRegionKeys = this.tag?.value?.regions?.map(r => r[0]) || []
+            let applicableBiomeKey = this.tag?.value?.biomes[0] ? this.tag.value.biomes[0][0] : ''
+            let current = getItemAvailability({item, applicableRegionKeys, applicableBiomeKey})
+*/
+            let current = getItemAvailability({item})
+            console.log(current)
+            await this._updateItemAvailability(item, {current})
+        }
+
         await this._applyFilter()
     }
 
@@ -446,6 +455,10 @@ export class ItemManager extends Application {
             item.data.availability = mergeObject(availability, obj)
             await this.currentPack.updateEntity(item);
         }
+    }
+
+    _getItemAvailability(item) {
+        return item.data?.availability || item.data?.data?.availability || {}
     }
 
 }

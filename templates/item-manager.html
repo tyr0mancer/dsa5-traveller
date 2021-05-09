@@ -139,7 +139,7 @@
             <div class="switch-checkbox">
                 <input id="show-availability" name="availability.show" class="filter"
                        type="checkbox" {{checked filter.availability.show}}/>
-                <label for="show-availability" style="font-size: 0.9em; height:20px">Aktuelle Verfügbarkeit anzeigen</label>
+                <label for="show-availability" style="font-size: 0.9em; height:20px">Tatsächliche Verfügbarkeit anzeigen</label>
             </div>
 
         </section>
@@ -166,7 +166,7 @@
                 <th style="width: 300px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3></th>
                 {{/if}}
                 {{#if filter.availability.show}}
-                <th><h3>{{{sortingHeader sorting 'Aktuelle Verfügbarkeit' 'aktuell'}}}</h3></th>
+                <th><h3>{{{sortingHeader sorting 'Tatsächliche Verfügbarkeit' 'current'}}}</h3></th>
                 {{/if}}
                 <th><h3>{{{sortingHeader sorting 'Generelle Verfügbarkeit' 'general'}}}</h3></th>
                 <th><h3><b>Verfügbarkeit nach Regionen</b></h3></th>

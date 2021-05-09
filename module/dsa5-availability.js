@@ -87,13 +87,13 @@ export default class Dsa5Availability {
 
     static flattenAvailability(availability) {
         let result = {regions: [], biomes: []}
-        console.log(availability, result)
+        //console.log(availability, result)
         return result
     }
 
     static expandAvailability(availability) {
         let result = {regions: [], biomes: []}
-        console.log(availability, result)
+        //console.log(availability, result)
         return result
     }
 
@@ -131,18 +131,18 @@ export const getBiomeKeyFromLocation = (currentLocation) => currentLocation.biom
  * @param applicableRegionKeys {string[]} the region keys to check against
  * @return {number} overall availability score
  */
-export function getItemAvailability({applicableLocation, item, applicableBiomeKey = getBiomeKeyFromLocation(applicableLocation), applicableRegionKeys = getRegionKeysFromLocation(applicableLocation)}) {
+export function getItemAvailability({applicableLocation = Dsa5Availability.currentLocation, item, applicableBiomeKey = getBiomeKeyFromLocation(applicableLocation), applicableRegionKeys = getRegionKeysFromLocation(applicableLocation)}) {
     // try to get availability info from item object
     const availability = item?.data?.availability ? item?.data?.availability : item?.data?.data?.availability
     if (!availability)
-        return -1 // todo would  false, undefined, null ? or should it be a promise?
+        return -1 // todo would  false, undefined, null ? or should it be a promise.reject?
+    console.log(availability)
     // check availability data against region and biome
-    const generalAvailability = availability.general || Dsa5Availability.DEFAULT_AVAILABILITY
-    const regionAvailability = Math.max(availability.regions?.filter(e => {
-        return applicableRegionKeys.includes(e[0])
-    }).map(e => e[1])) || generalAvailability
+    const generalAvailability = (availability.general !== undefined && availability.general !== "") ? availability.general : Dsa5Availability.DEFAULT_AVAILABILITY
+    const maxRegionValueArray = availability.regions?.filter(e => applicableRegionKeys.includes(e[0])).map(e => e[1])
+    const regionAvailability = maxRegionValueArray?.length ? Math.max(maxRegionValueArray) : generalAvailability
     const biomeAvailability = (availability.biomes?.find(e => applicableBiomeKey === e[0]) || ['', Dsa5Availability.MAX_AVAILABILITY])[1]
-    return Math.max(generalAvailability, Math.min(regionAvailability, biomeAvailability))
+    return Math.min(regionAvailability, biomeAvailability)
 }
 
 
