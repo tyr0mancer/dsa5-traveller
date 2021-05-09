@@ -13,7 +13,6 @@ export class ItemManager extends Application {
         this.sorting = {key: 'name', direction: 1}
         this.currentLocation = Dsa5Availability.currentLocation
         Hooks.on(moduleName + ".update-location", () => {
-            console.log(Dsa5Availability.currentLocation)
             this.currentLocation = Dsa5Availability.currentLocation
             this.render()
         });
@@ -115,7 +114,6 @@ export class ItemManager extends Application {
         obj[event.currentTarget.name] = (event.currentTarget.type === "checkbox")
             ? event.currentTarget.checked === true
             : event.currentTarget.value
-        console.log(mergeObject(this.tag, expandObject(obj)))
         this.tag = mergeObject(this.tag, expandObject(obj))
         this.render()
     }
@@ -233,7 +231,6 @@ export class ItemManager extends Application {
     }
 
     async _selectFolder(event) {
-        console.log('_selectFolder')
         if (event.currentTarget.value)
             this.currentFolder = game.folders.find(f => f._id === event.currentTarget.value);
         this.itemList = this.currentFolder?.content
@@ -241,7 +238,6 @@ export class ItemManager extends Application {
     }
 
     async _selectPack(event) {
-        console.log('_selectPack')
         if (event.currentTarget.value)
             this.currentPack = this.itemCompendiaOptions.find(p => p.collection === event.currentTarget.value);
         await this.currentPack?.getIndex()
@@ -274,13 +270,11 @@ export class ItemManager extends Application {
     }
 
     async _applyTag(event) {
-        console.clear()
 
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
 
         const mergeArray = (oldArray=[], newArray=[]) => {
-            console.log(oldArray, newArray)
             let result = oldArray
             for (let entry of newArray) {
                 let existingEntry = result.find(e => e[0] === entry[0])
@@ -292,7 +286,7 @@ export class ItemManager extends Application {
             return result
         }
 
-        const oldAvailability = item.data?.data.availability || item.data?.availability || {}
+        const oldAvailability = item.data?.data?.availability || item.data?.availability || {}
         const newAvailability = {
             general: (this.tag.overwrite?.general)
                 ? this.tag?.value?.general
@@ -310,11 +304,6 @@ export class ItemManager extends Application {
                     ? this.tag.value?.biomes
                     : mergeArray(oldAvailability.biomes, this.tag.value?.biomes),
         }
-
-        console.log(this.tag.overwrite)
-        console.log(oldAvailability)
-        console.log(this.tag.value)
-        console.log(newAvailability)
 
 
         // local item
