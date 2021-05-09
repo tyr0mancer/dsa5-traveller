@@ -80,7 +80,7 @@
                                    type="checkbox" {{checked tag.overwrite.regions}}/>
                             <label for="overwrite.regions">Regionen überschreiben</label>
                         </div>
-                        <button name="set-regions-tag">Regionen bearbeiten</button>
+                        <button name="set-tag-value" data-type="regions">Regionen bearbeiten</button>
                         {{#each tag.value.regions as |entry id|}}
                         <div class="tag-entry" data-region-id="{{id}}">
                             {{{showStarRating entry}}}
@@ -94,7 +94,7 @@
                                    type="checkbox" {{checked tag.overwrite.biomes}}/>
                             <label for="overwrite.biomes">Landschafts-Typen überschreiben</label>
                         </div>
-                        <button name="set-regions-tag">Landschafts-Typen bearbeiten</button>
+                        <button name="set-tag-value" data-type="biomes">Landschafts-Typen bearbeiten</button>
                         {{#each tag.value.biomes as |entry id|}}
                         <div class="tag-entry" data-biome-id="{{id}}">
                             {{{showStarRating entry}}}
@@ -104,8 +104,10 @@
                     </div>
                 </div>
 
+<!--
                 <hr/>
                 <pre>{{stringify tag}}</pre>
+-->
 
             </main>
         </section>

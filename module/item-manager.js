@@ -70,6 +70,7 @@ export class ItemManager extends Application {
         html.find(".tag").change((event) => this._setTag(event))
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
         html.find(".tag-entry").mousedown((event) => this._changeEntryWeight(event))
+        html.find("button[name=set-tag-value]").click((event) => this._setTagValue(event))
 
 
         html.find("td.apply-tag").mousedown((event) => {
@@ -314,4 +315,59 @@ export class ItemManager extends Application {
         this.render()
 
     }
+
+    _setTagValue(event) {
+        const dataType = $(event.currentTarget).attr("data-type")
+
+        const regions = game.settings.get(moduleName, 'regions')
+        const biomes = game.settings.get(moduleName, 'biomes')
+
+        let content = ``
+
+        if (dataType === 'regions')
+            for (let category of regions) {
+                content += `<h2>${category.name}</h2>`
+                for (let entry of category.index) {
+                    let checked = (this.tag.value && this.tag.value[dataType]?.find(r => r[0] === entry.key) !== undefined) ? 'checked' : ''
+                    content += `<input type="checkbox" id="${category.key}-${entry.key}" name="${entry.key}" ${checked} /><label for="${category.key}-${entry.key}">${entry.name}</label>`
+                }
+            }
+        else
+            for (let entry of biomes) {
+                let checked = (this.tag.value && this.tag.value[dataType]?.find(r => r[0] === entry.key) !== undefined) ? 'checked' : ''
+                content += `<input type="checkbox" id="biome-${entry.key}" name="${entry.key}" ${checked} /><label for="biome-${entry.key}">${entry.name}</label>`
+            }
+
+
+        let types = ['one']
+        const d = new Dialog({
+            title: "Region / Landschaftstyp auswählen",
+            content,
+            buttons: {
+                'ok': {
+                    label: 'auswählen',
+                    callback: async (html) => {
+                        let selection = []
+                        for (let data of html.find('input[type=checkbox]')) {
+                            if (!data.checked) continue
+                            let e = data.name.split('.')
+                            selection.push([data.name, 3])
+                        }
+                        let newValue = {}
+                        newValue[dataType] = selection
+                        this.tag = mergeObject(this.tag, {value: newValue})
+                        this.render()
+                    }
+                }
+            },
+            default: types[0],
+        });
+        d.render(true);
+
+
+    }
 }
+
+
+
+
