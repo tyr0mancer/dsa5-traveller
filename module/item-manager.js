@@ -7,7 +7,6 @@ export class ItemManager extends Application {
         super();
         this.itemCompendiaOptions = game.packs.filter(p => p.metadata.entity === 'Item')
         this.itemFolderOptions = game.folders.filter(f => (f.data.type === "Item"));
-        this.hideFiltered = false
         this.filter = {img: {}, name: {}, description: {show: false}, general: {}, regions: {}, biomes: {},}
         this.tag = {}
         this.sorting = {key: 'name', direction: 1}
@@ -41,7 +40,6 @@ export class ItemManager extends Application {
             itemFolderOptions: this.itemFolderOptions,
             currentPack: this.currentPack,
             currentFolder: this.currentFolder,
-            hideFiltered: this.hideFiltered,
             filter: this.filter,
             tag: this.tag,
             sorting: this.sorting,
@@ -67,10 +65,6 @@ export class ItemManager extends Application {
         html.find("button[name=reset-filter]").click(() => this._resetFilter())
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
         html.find("select[name=select-pack]").change(event => this._selectPack(event))
-        html.find("input[name=hide-filtered]").change(event => {
-            this.hideFiltered = event.currentTarget.checked === true
-            this._applyFilter()
-        })
         html.find(".filter").change((event) => this._setFilter(event))
         html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
@@ -103,7 +97,7 @@ export class ItemManager extends Application {
             ? event.currentTarget.checked === true
             : event.currentTarget.value
         this.filter = mergeObject(this.filter, expandObject(obj))
-        this._applySort()
+        await this._applyFilter()
     }
 
     _applySort(event) {
@@ -213,7 +207,7 @@ export class ItemManager extends Application {
     }
 
     async _resetFilter() {
-        this.filter = {}
+        this.filter = {description: {show: this.filter.description.show}}
         await this._applyFilter()
     }
 

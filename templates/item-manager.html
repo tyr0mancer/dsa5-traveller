@@ -34,10 +34,9 @@
             <div class="switch-checkbox">
                 <input id="show-description" name="description.show" class="filter"
                        type="checkbox" {{checked filter.description.show}}/>
-                <label for="show-description">Beschreibung anzeigen</label>
+                <label for="show-description" style="font-size: 0.8em; height:20px">Beschreibung anzeigen</label>
             </div>
             <button type="button" name="apply-filter"><i class="fas fa-sync-alt"></i> neu laden</button>
-            <button type="button" name="reset-filter" class="reset"><i class="far fa-trash-alt"></i> reset</button>
         </section>
 
 
@@ -53,7 +52,9 @@
                     <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked tag.overwrite}}/>
                     <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
                 </div>
+<!--
                 <pre>{{stringify tag}}</pre>
+-->
 
             </main>
         </section>
@@ -96,44 +97,56 @@
                 <th></th>
                 <th><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
                 {{#if filter.description.show}}
-                <th><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3> </th>
+                <th style="width: 400px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3> </th>
                 {{/if}}
-                <th><h3>{{{sortingHeader sorting 'Allgemeine<br/>Verfügbarkeit' 'general'}}}</h3></th>
+                <th><h3>{{{sortingHeader sorting 'Verfügbarkeit' 'general'}}}</h3></th>
                 <th><h3><b>Regionen</b></h3></th>
                 <th><h3><b>Landschafts-Typen</b></h3></th>
             </tr>
 
             <tr>
-                <th>
-                    <pre>{{stringify filter.img}}</pre>
-                </th>
-                <th>
+                <td>
+                    <button title="ásads"
+                            type="button" name="reset-filter" class="reset"><i class="far fa-trash-alt"></i></button>
+
+                    <!--
+                                        <pre>{{stringify filter.img}}</pre>
+                    -->
+                </td>
+                <td>
                     <div class="boxed-input">
                         <input id="name.keyword" value="{{filter.name.keyword}}" name="name.keyword" class="filter" type="text"/>
                         <label for="name.keyword">Suchbegriffe</label>
                     </div>
+<!--
                     <pre>{{stringify filter.name}}</pre>
-                </th>
+-->
+                </td>
                 {{#if filter.description.show}}
-                <th>
+                <td>
                     <div class="boxed-input">
                         <input id="description.keyword" value="{{filter.description.keyword}}" name="description.keyword" class="filter"
                                type="text"/>
                         <label for="description.keyword">Suchbegriffe</label>
                     </div>
 
+<!--
                     <pre>{{stringify filter.description}}</pre>
-                </th>
+-->
+                </td>
                 {{/if}}
-                <th>
+                <td>
                     <div class="col-2">
                         <div class="select-css">
                             <select id="filter-general-min" name="general.min" class="filter">
                                 {{#select filter.general.min}}
                                 <option value=""></option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                <option value="0">nie</option>
+                                <option value="1">1/5</option>
+                                <option value="2">2/5</option>
+                                <option value="3">3/5</option>
+                                <option value="4">4/5</option>
+                                <option value="5">5/5</option>
                                 {{/select}}
                             </select>
                             <label for="filter-general-min">min</label>
@@ -142,18 +155,23 @@
                             <select id="filter-general-max" name="general.max" class="filter">
                                 {{#select filter.general.max}}
                                 <option value=""></option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
+                                <option value="0">nie</option>
+                                <option value="1">1/5</option>
+                                <option value="2">2/5</option>
+                                <option value="3">3/5</option>
+                                <option value="4">4/5</option>
+                                <option value="5">5/5</option>
                                 {{/select}}
                             </select>
                             <label for="filter-general-max">max</label>
                         </div>
                     </div>
+<!--
                     <pre>{{stringify filter.general}}</pre>
-                </th>
-                <th>
-                    <div class="col-2">
+-->
+                </td>
+                <td>
+                    <div class="col-2" style="grid-template-columns: 150px auto">
                         <div class="select-css">
                             <select id="regions-filter-type" class="filter" name="regions.filtertype">
                                 <option value=""></option>
@@ -165,18 +183,20 @@
                                 <option value="defined">item ist irgend einer Region zugeordnet</option>
                                 {{/select}}
                             </select>
-                            <label for="regions-filter-type">Filter-Optionen</label>
+                            <label for="regions-filter-type">Filter</label>
                         </div>
                         <div class="boxed-input">
                             <input id="regions.keywords" name="regions.keywords" class="filter" type="text"
-                                   value="{{filter.regions.keywords}}" placeholder="durch , trennen"/>
+                                   value="{{filter.regions.keywords}}" placeholder="durch ',' trennen"/>
                             <label for="regions.keywords">Region Keys</label>
                         </div>
                     </div>
+<!--
                     <pre>{{stringify filter.regions}}</pre>
-                </th>
-                <th>
-                    <div class="col-2">
+-->
+                </td>
+                <td>
+                    <div class="col-2" style="grid-template-columns: 150px auto">
                         <div class="select-css">
                             <select id="biome-filter-type" class="filter" name="biomes.filtertype">
                                 <option value=""></option>
@@ -188,16 +208,18 @@
                                 <option value="defined">item ist irgend einem LS Typ zugeordnet</option>
                                 {{/select}}
                             </select>
-                            <label for="biome-filter-type">Filter-Optionen</label>
+                            <label for="biome-filter-type">Filter</label>
                         </div>
                         <div class="boxed-input">
                             <input id="biomes.keywords" name="biomes.keywords" class="filter" type="text"
-                                   value="{{filter.biomes.keywords}}" placeholder="durch , trennen"/>
+                                   value="{{filter.biomes.keywords}}" placeholder="durch ',' trennen"/>
                             <label for="biomes.keywords">Biome Keys</label>
                         </div>
                     </div>
+<!--
                     <pre>{{stringify filter.biomes}}</pre>
-                </th>
+-->
+                </td>
             </tr>
 
             {{#each filteredIndex}}
