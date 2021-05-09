@@ -52,10 +52,7 @@
                     <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked tag.overwrite}}/>
                     <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
                 </div>
-<!--
                 <pre>{{stringify tag}}</pre>
--->
-
             </main>
         </section>
 
@@ -97,42 +94,32 @@
                 <th></th>
                 <th><h3>{{{sortingHeader sorting 'Name' 'name'}}}</h3></th>
                 {{#if filter.description.show}}
-                <th style="width: 400px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3> </th>
+                <th style="width: 400px"><h3>{{{sortingHeader sorting 'Beschreibung' 'description'}}}</h3></th>
                 {{/if}}
                 <th><h3>{{{sortingHeader sorting 'Verfügbarkeit' 'general'}}}</h3></th>
                 <th><h3><b>Regionen</b></h3></th>
                 <th><h3><b>Landschafts-Typen</b></h3></th>
             </tr>
-
             <tr>
                 <td>
-                    <button title="ásads"
+                    <button title="Alle Filter zurück setzen"
                             type="button" name="reset-filter" class="reset"><i class="far fa-trash-alt"></i></button>
-
-                    <!--
-                                        <pre>{{stringify filter.img}}</pre>
-                    -->
                 </td>
                 <td>
                     <div class="boxed-input">
-                        <input id="name.keyword" value="{{filter.name.keyword}}" name="name.keyword" class="filter" type="text"/>
+                        <input id="name.keyword" value="{{filter.name.keyword}}" name="name.keyword" class="filter"
+                               type="text"/>
                         <label for="name.keyword">Suchbegriffe</label>
                     </div>
-<!--
-                    <pre>{{stringify filter.name}}</pre>
--->
                 </td>
                 {{#if filter.description.show}}
                 <td>
                     <div class="boxed-input">
-                        <input id="description.keyword" value="{{filter.description.keyword}}" name="description.keyword" class="filter"
+                        <input id="description.keyword" value="{{filter.description.keyword}}"
+                               name="description.keyword" class="filter"
                                type="text"/>
                         <label for="description.keyword">Suchbegriffe</label>
                     </div>
-
-<!--
-                    <pre>{{stringify filter.description}}</pre>
--->
                 </td>
                 {{/if}}
                 <td>
@@ -166,9 +153,6 @@
                             <label for="filter-general-max">max</label>
                         </div>
                     </div>
-<!--
-                    <pre>{{stringify filter.general}}</pre>
--->
                 </td>
                 <td>
                     <div class="col-2" style="grid-template-columns: 150px auto">
@@ -191,9 +175,6 @@
                             <label for="regions.keywords">Region Keys</label>
                         </div>
                     </div>
-<!--
-                    <pre>{{stringify filter.regions}}</pre>
--->
                 </td>
                 <td>
                     <div class="col-2" style="grid-template-columns: 150px auto">
@@ -216,11 +197,9 @@
                             <label for="biomes.keywords">Biome Keys</label>
                         </div>
                     </div>
-<!--
-                    <pre>{{stringify filter.biomes}}</pre>
--->
                 </td>
             </tr>
+
 
             {{#each filteredIndex}}
             <tr class="update-location">

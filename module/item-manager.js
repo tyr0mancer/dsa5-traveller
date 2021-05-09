@@ -52,24 +52,24 @@ export class ItemManager extends Application {
     async activateListeners(html) {
         super.activateListeners(html);
         html.find("nav.help-icon").click((event) => $('.help-info.help-' + $(event.currentTarget).attr("data-help")).toggle())
-        html.find("a[name=sorter]").click((event) => {
-            let key = $(event.currentTarget).attr("data-sort-key")
-            if (this.sorting.key === key)
-                this.sorting.direction *= -1
-            else
-                this.sorting = {key, direction: 1}
-            this._applySort()
-        })
 
+        // datasource
         html.find("button[name=apply-filter]").click(() => this._applyFilter())
         html.find("button[name=reset-filter]").click(() => this._resetFilter())
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
         html.find("select[name=select-pack]").change(event => this._selectPack(event))
+
+        // filter + sorter
         html.find(".filter").change((event) => this._setFilter(event))
-        html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
+        html.find("a[name=sorter]").click((event) => this._setSorter(event))
+
+        // tag / label
+        html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
+
         html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
-        html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
+        html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
+
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
             let isRightMB = false;
@@ -299,4 +299,12 @@ export class ItemManager extends Application {
         await this._applyFilter()
     }
 
+    _setSorter(event) {
+        let key = $(event.currentTarget).attr("data-sort-key")
+        if (this.sorting.key === key)
+            this.sorting.direction *= -1
+        else
+            this.sorting = {key, direction: 1}
+        this._applySort()
+    }
 }
