@@ -42,7 +42,31 @@ Hooks.once('init', () => {
         return result
     });
 
-});
+    Handlebars.registerHelper('showStarRating', function (weight) {
+        let value = Array.isArray(weight)
+            ? parseInt(weight[1])
+            : parseInt(weight)
+        switch (value) {
+            case 0:
+                return `<i style="color: red" class="far fa-times-circle"></i>`
+            case 1:
+                return `<i style="color: lightblue;" class="far fa-star"></i>`
+            case 2:
+                return `<i style="color: blue" class="far fa-star"></i>`
+            case 3:
+                return `<i style="color: blue" class="fas fa-star-half-alt"></i>`
+            case 4:
+                return `<i style="color: blue" class="fas fa-star"></i>`
+            case 5:
+                return `<i style="color: green" class="fas fa-star"></i>`
+        }
+        return ''
+    });
+
+    Handlebars.registerHelper('index_of', function(context,ndx) {
+        return context[ndx];
+    });
+})
 
 /**
  * adds entries to MeisterTools Menubar. Should update this to make this mod independent

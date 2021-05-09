@@ -1,6 +1,6 @@
 <section class="meistertools dsa5-traveller content">
 
-    <div class="col-3" style="grid-template-columns: 200px auto 200px">
+    <div class="col-3" style="grid-template-columns: 300px auto 200px">
 
         <!-- ---------------------
         Col 1 - Datenquelle
@@ -9,34 +9,39 @@
             <header>
                 <h2>Datenquelle</h2>
             </header>
-            <div class="select-css">
-                <select id="select-item-pack" name="select-pack">
-                    {{#select currentPack.collection}}
-                    <option value="">-&#45;&#45;</option>
-                    {{#each itemCompendiaOptions}}
-                    <option value="{{collection}}">{{metadata.label}} ({{collection}})</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-                <label for="select-item-pack">Aus Kompendium</label>
+            <div class="col-2" style="grid-template-columns: auto 32px">
+                <div class="select-css">
+                    <select id="select-item-pack" name="select-pack">
+                        {{#select currentPack.collection}}
+                        <option value="">-&#45;&#45;</option>
+                        {{#each itemCompendiaOptions}}
+                        <option value="{{collection}}">{{metadata.label}} ({{collection}})</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <label for="select-item-pack">Aus Kompendium</label>
+                </div>
+                <button type="button" name="select-pack"><i class="fas fa-sync-alt"></i></button>
             </div>
-            <div class="select-css">
-                <select id="select-item-folder" name="select-folder">
-                    {{#select currentFolder._id}}
-                    <option value="">---</option>
-                    {{#each itemFolderOptions}}
-                    <option value="{{_id}}">{{name}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-                <label for="select-item-folder">Lokale Ordner</label>
+            <div class="col-2" style="grid-template-columns: auto 32px">
+                <div class="select-css">
+                    <select id="select-item-folder" name="select-folder">
+                        {{#select currentFolder._id}}
+                        <option value="">---</option>
+                        {{#each itemFolderOptions}}
+                        <option value="{{_id}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <label for="select-item-folder">Lokale Ordner</label>
+                </div>
+                <button type="button" name="select-folder"><i class="fas fa-sync-alt"></i></button>
             </div>
             <div class="switch-checkbox">
                 <input id="show-description" name="description.show" class="filter"
                        type="checkbox" {{checked filter.description.show}}/>
-                <label for="show-description" style="font-size: 0.8em; height:20px">Beschreibung anzeigen</label>
+                <label for="show-description" style="font-size: 0.9em; height:20px">Beschreibung anzeigen</label>
             </div>
-            <button type="button" name="apply-filter"><i class="fas fa-sync-alt"></i> neu laden</button>
         </section>
 
 
@@ -48,11 +53,60 @@
                 <h2>Label</h2>
             </header>
             <main>
-                <div class="switch-checkbox">
-                    <input id="tag-overwrite" name="overwrite" class="tag" type="checkbox" {{checked tag.overwrite}}/>
-                    <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
+                <div class="col-3" style="grid-template-columns: 50px auto auto">
+                    <div>
+                        <div class="switch-checkbox">
+                            <input id="overwrite.general" name="overwrite.general" class="tag"
+                                   type="checkbox" {{checked tag.overwrite.general}}/>
+                            <label for="overwrite.general">.</label>
+                        </div>
+                        <div style="font-size: 2em; font-weight: bold">
+                            <div class="select-css no-label">
+                                <select name="value.general" class="tag">
+                                    {{#select tag.value.general}}
+                                    <option value=""></option>
+                                    {{#each availabilityOptions}}
+                                    <option value="{{key}}">{{short}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </div>
+                            {{{showStarRating tag.value.general}}}
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="switch-checkbox">
+                            <input id="overwrite.regions" name="overwrite.regions" class="tag"
+                                   type="checkbox" {{checked tag.overwrite.regions}}/>
+                            <label for="overwrite.regions">Regionen überschreiben</label>
+                        </div>
+                        <button name="set-regions-tag">Regionen bearbeiten</button>
+                        {{#each tag.value.regions}}
+                        <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                        {{/each}} <!--tag.value.regions-->
+                    </div>
+
+
+                    <div>
+                        <div class="switch-checkbox">
+                            <input id="overwrite.biomes" name="overwrite.biomes" class="tag"
+                                   type="checkbox" {{checked tag.overwrite.biomes}}/>
+                            <label for="overwrite.biomes">Landschafts-Typen überschreiben</label>
+                        </div>
+                        <button name="set-regions-tag">Landschafts-Typen bearbeiten</button>
+                        {{#each tag.value.biomes}}
+                        <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}
+                        </div>
+                        {{/each}} <!--tag.value.regions-->
+                    </div>
                 </div>
-                <pre>{{stringify tag}}</pre>
+
+                <!--
+                                <hr/>
+                                <pre>{{stringify tag}}</pre>
+                -->
             </main>
         </section>
 
@@ -128,12 +182,9 @@
                             <select id="filter-general-min" name="general.min" class="filter">
                                 {{#select filter.general.min}}
                                 <option value=""></option>
-                                <option value="0">nie</option>
-                                <option value="1">1/5</option>
-                                <option value="2">2/5</option>
-                                <option value="3">3/5</option>
-                                <option value="4">4/5</option>
-                                <option value="5">5/5</option>
+                                {{#each availabilityOptions}}
+                                <option value="{{key}}">{{short}}</option>
+                                {{/each}}
                                 {{/select}}
                             </select>
                             <label for="filter-general-min">min</label>
@@ -142,12 +193,9 @@
                             <select id="filter-general-max" name="general.max" class="filter">
                                 {{#select filter.general.max}}
                                 <option value=""></option>
-                                <option value="0">nie</option>
-                                <option value="1">1/5</option>
-                                <option value="2">2/5</option>
-                                <option value="3">3/5</option>
-                                <option value="4">4/5</option>
-                                <option value="5">5/5</option>
+                                {{#each availabilityOptions}}
+                                <option value="{{key}}">{{short}}</option>
+                                {{/each}}
                                 {{/select}}
                             </select>
                             <label for="filter-general-max">max</label>
@@ -214,16 +262,24 @@
                 {{/if}}
 
                 <td class="apply-tag" data-item-id="{{_id}}">
-                    <pre>{{data.availability.general}}</pre>
-                    <pre>{{data.data.availability.general}}</pre>
+                    <div style="font-size: 1em;"> {{{showStarRating data.availability.general}}}</div>
+                    <div style="font-size: 1em;"> {{{showStarRating data.data.availability.general}}}</div>
                 </td>
                 <td class="apply-tag" data-item-id="{{_id}}">
-                    <pre>{{{locationToString data.availability.regions}}}</pre>
-                    <pre>{{{locationToString data.data.availability.regions}}}</pre>
+                    {{#each data.availability.regions}}
+                    <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                    {{/each}}
+                    {{#each data.data.availability.regions}}
+                    <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                    {{/each}}
                 </td>
                 <td class="apply-tag" data-item-id="{{_id}}">
-                    <pre>{{{locationToString data.availability.biomes}}}</pre>
-                    <pre>{{{locationToString data.data.availability.biomes}}}</pre>
+                    {{#each data.availability.biomes}}
+                    <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                    {{/each}}
+                    {{#each data.data.availability.biomes}}
+                    <div style="font-size: 1em;">{{{showStarRating this}}} {{#index_of this 0}}{{/index_of}}</div>
+                    {{/each}}
                 </td>
             </tr>
             {{/each}}

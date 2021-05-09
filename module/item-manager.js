@@ -38,10 +38,11 @@ export class ItemManager extends Application {
         return {
             itemCompendiaOptions: this.itemCompendiaOptions,
             itemFolderOptions: this.itemFolderOptions,
+            availabilityOptions: Dsa5Availability.AVAILABILITY_OPTIONS,
             currentPack: this.currentPack,
             currentFolder: this.currentFolder,
             filter: this.filter,
-            tag: this.tag.value,
+            tag: this.tag,
             sorting: this.sorting,
             mainIndex: this.itemList,
             filteredIndex: this.filteredIndex,
@@ -54,9 +55,10 @@ export class ItemManager extends Application {
         html.find("nav.help-icon").click((event) => $('.help-info.help-' + $(event.currentTarget).attr("data-help")).toggle())
 
         // datasource
-        html.find("button[name=apply-filter]").click(() => this._applyFilter())
         html.find("button[name=reset-filter]").click(() => this._resetFilter())
+        html.find("button[name=select-folder]").click(event => this._selectFolder(event))
         html.find("select[name=select-folder]").change(event => this._selectFolder(event))
+        html.find("button[name=select-pack]").click(event => this._selectPack(event))
         html.find("select[name=select-pack]").change(event => this._selectPack(event))
 
         // filter + sorter
@@ -64,14 +66,8 @@ export class ItemManager extends Application {
         html.find("a[name=sorter]").click((event) => this._setSorter(event))
 
         // tag / label
+        html.find(".tag").change((event) => this._setTag(event))
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
-
-/*
-        html.find("input.tag[type=text]").change((event) => this.tag.value[event.currentTarget.name] = event.currentTarget.value)
-        html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
-        html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
-*/
-
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
             let isRightMB = false;
@@ -102,6 +98,17 @@ export class ItemManager extends Application {
         await this._applyFilter()
     }
 
+    async _setTag(event) {
+        let obj = {}
+        obj[event.currentTarget.name] = (event.currentTarget.type === "checkbox")
+            ? event.currentTarget.checked === true
+            : event.currentTarget.value
+        console.log(mergeObject(this.tag, expandObject(obj)))
+        this.tag = mergeObject(this.tag, expandObject(obj))
+        this.render()
+    }
+
+
     _applySort(event) {
         let {key, direction} = this.sorting
         this.filteredIndex = this.filteredIndex?.sort((e1, e2) => {
@@ -112,7 +119,7 @@ export class ItemManager extends Application {
                 b = (e2.data?.description?.value || e2.data?.data?.description?.value) ? 1 : 0
             } else if (key === 'general') {
                 a = e1.data?.availability?.general || e1.data?.data?.availability?.general || -1
-                b = e2.data?.availability?.general || e1.data?.data?.availability?.general || -1
+                b = e2.data?.availability?.general || e2.data?.data?.availability?.general || -1
             } else {
                 a = e1[key]
                 b = e2[key]
@@ -214,13 +221,17 @@ export class ItemManager extends Application {
     }
 
     async _selectFolder(event) {
-        this.currentFolder = game.folders.find(f => f._id === event.currentTarget.value);
+        console.log('_selectFolder')
+        if (event.currentTarget.value)
+            this.currentFolder = game.folders.find(f => f._id === event.currentTarget.value);
         this.itemList = this.currentFolder?.content
         await this._applyFilter()
     }
 
     async _selectPack(event) {
-        this.currentPack = this.itemCompendiaOptions.find(p => p.collection === event.currentTarget.value);
+        console.log('_selectPack')
+        if (event.currentTarget.value)
+            this.currentPack = this.itemCompendiaOptions.find(p => p.collection === event.currentTarget.value);
         await this.currentPack?.getIndex()
         let newItemList = []
         for (let e of this.currentPack?.index) {
@@ -230,7 +241,6 @@ export class ItemManager extends Application {
         this.itemList = newItemList
         await this._applyFilter()
     }
-
 
 
     async _readTag(event) {
