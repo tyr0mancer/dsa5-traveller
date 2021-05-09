@@ -79,7 +79,7 @@ export class ItemManager extends Application {
                 isRightMB = event.button == 2;
             }
             if (isRightMB) {
-                this._copyTag(event)
+                this._readTag(event)
             } else {
                 this._applyTag(event)
             }
@@ -229,71 +229,25 @@ export class ItemManager extends Application {
         await this._applyFilter()
     }
 
-    async _copyTag(event) {
+
+
+    async _readTag(event) {
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
-        let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
+        let availability = item.data?.data?.availability || item.data?.availability
         if (!availability) return
-
-        let newTag = {general: availability.general, overwrite: this.tag.overwrite}
-        for (let e of availability.regions)
-            newTag['region' + e[1]] = e[0]
-        for (let e of availability.biomes)
-            newTag['biome' + e[1]] = e[0]
-        this.tag = newTag
+        this.tag = availability
         this.render()
     }
 
     async _applyTag(event) {
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
-        let availability = item.data.data?.availability ? item.data.data?.availability : item.data?.availability
-        if (!availability) availability = {}
-
-        let general = (this.tag.overwrite && this.tag.general || !availability.general) ? this.tag.general : availability.general
-        let regions = this.tag.overwrite ? [] : availability.regions || []
-        let biomes = this.tag.overwrite ? [] : availability.biomes || []
-        for (let [k, v] of Object.entries(this.tag)) {
-            if (k.substr(0, 6) === 'region') {
-                let values = v.split(',') || [];
-                for (let value of values)
-                    if (value) regions.push([value, parseInt(k.substr(6))])
-            } else if (k.substr(0, 5) === 'biome') {
-                let values = v.split(',') || [];
-                for (let value of values)
-                    if (value) biomes.push([value, parseInt(k.substr(5))])
-            }
-        }
         // local item
         if (item.data.data?.availability) {
-            await item.update({"data.availability": {general, regions, biomes}})
+            await item.update({"data.availability": {...this.tag}})
         } else {
-            /*
-                // temporary hack to migrate from old format
-                if (item.data.location) {
-                    regions = []
-                    biomes = []
-                    for (let weight = 1; weight <= 5; weight++) {
-                        let regionString = item.data.location['rarity' + weight]?.region.value || ''
-                        for (let region of regionString?.split(','))
-                            if (region) {
-                                if (region === 'sonst')
-                                    general = weight
-                                else
-                                    regions.push([region, weight])
-                            }
-
-                        let biomeString = item.data.location['rarity' + weight]?.biome.value || ''
-                        for (let biome of biomeString?.split(','))
-                            if (biome)
-                                biomes.push([biome, weight])
-                    }
-                    delete item.data.location
-                    delete item.data.data
-                }
-            */
-
-            item.data.availability = {general, regions, biomes}
+            item.data.availability = {...this.tag}
             await this.currentPack.updateEntity(item);
         }
         await this._applyFilter()
