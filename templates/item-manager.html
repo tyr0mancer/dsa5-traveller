@@ -156,6 +156,7 @@
                     <div class="col-2">
                         <div class="select-css">
                             <select id="regions-filter-type" class="filter" name="regions.filtertype">
+                                <option value=""></option>
                                 {{#select filter.regions.filtertype}}
                                 <option value="any">mind. eine Region passt</option>
                                 <option value="all">alle Regionen passen</option>
@@ -168,7 +169,7 @@
                         </div>
                         <div class="boxed-input">
                             <input id="regions.keywords" name="regions.keywords" class="filter" type="text"
-                                   value="{{filter.regions.keywords}}" placeholder="Suchbegriffe durch , trennen"/>
+                                   value="{{filter.regions.keywords}}" placeholder="durch , trennen"/>
                             <label for="regions.keywords">Region Keys</label>
                         </div>
                     </div>
@@ -178,6 +179,7 @@
                     <div class="col-2">
                         <div class="select-css">
                             <select id="biome-filter-type" class="filter" name="biomes.filtertype">
+                                <option value=""></option>
                                 {{#select filter.biomes.filtertype}}
                                 <option value="any">mind. ein LS Typ passt</option>
                                 <option value="all">alle LS Typen passen</option>
@@ -190,7 +192,7 @@
                         </div>
                         <div class="boxed-input">
                             <input id="biomes.keywords" name="biomes.keywords" class="filter" type="text"
-                                   value="{{filter.biomes.keywords}}" placeholder="Suchbegriffe durch , trennen"/>
+                                   value="{{filter.biomes.keywords}}" placeholder="durch , trennen"/>
                             <label for="biomes.keywords">Biome Keys</label>
                         </div>
                     </div>
