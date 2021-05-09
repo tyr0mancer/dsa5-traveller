@@ -31,6 +31,11 @@
                 </select>
                 <label for="select-item-folder">Lokale Ordner</label>
             </div>
+            <div class="switch-checkbox">
+                <input id="show-description" name="description.show" class="filter"
+                       type="checkbox" {{checked filter.description.show}}/>
+                <label for="show-description">Beschreibung anzeigen</label>
+            </div>
             <button type="button" name="apply-filter"><i class="fas fa-sync-alt"></i> neu laden</button>
             <button type="button" name="reset-filter" class="reset"><i class="far fa-trash-alt"></i> reset</button>
         </section>
@@ -49,13 +54,6 @@
                     <label for="tag-overwrite">Vorhandene Tags bei Items entfernen</label>
                 </div>
                 <pre>{{stringify tag}}</pre>
-
-
-                <div class="switch-checkbox">
-                    <input id="show-description" name="description.show" class="filter"
-                           type="checkbox" {{checked filter.description.show}}/>
-                    <label for="show-description">Beschreibung anzeigen</label>
-                </div>
 
             </main>
         </section>
