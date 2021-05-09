@@ -1,10 +1,17 @@
 import {moduleName} from "../dsa5-traveller.js";
 
-const MAX_AVAILABILITY = 5
-const DEFAULT_AVAILABILITY = 3
-
-
 export default class Dsa5Availability {
+    static MAX_AVAILABILITY = 5
+    static DEFAULT_AVAILABILITY = 3
+    static AVAILABILITY_OPTIONS = [
+        {key: 0, short: "nie", name: 'nie'},
+        {key: 1, short: "1/5", name: 'fast nie'},
+        {key: 2, short: "2/5", name: 'selten'},
+        {key: 3, short: "3/5", name: 'normal'},
+        {key: 4, short: "4/5", name: 'oft'},
+        {key: 5, short: "5/5", name: 'sehr oft'}
+    ]
+
     static get currentLocation() {
         return game.settings.get(moduleName, 'location')
     }
@@ -130,11 +137,11 @@ export function getItemAvailability({applicableLocation, item, applicableBiomeKe
     if (!availability)
         return -1 // todo would  false, undefined, null ? or should it be a promise?
     // check availability data against region and biome
-    const generalAvailability = availability.general || DEFAULT_AVAILABILITY
+    const generalAvailability = availability.general || Dsa5Availability.DEFAULT_AVAILABILITY
     const regionAvailability = Math.max(availability.regions?.filter(e => {
         return applicableRegionKeys.includes(e[0])
     }).map(e => e[1])) || generalAvailability
-    const biomeAvailability = (availability.biomes?.find(e => applicableBiomeKey === e[0]) || ['', MAX_AVAILABILITY])[1]
+    const biomeAvailability = (availability.biomes?.find(e => applicableBiomeKey === e[0]) || ['', Dsa5Availability.MAX_AVAILABILITY])[1]
     return Math.max(generalAvailability, Math.min(regionAvailability, biomeAvailability))
 }
 
