@@ -50,7 +50,7 @@ Hooks.once('init', () => {
             case 0:
                 return `<i style="color: red" class="far fa-times-circle"></i>`
             case 1:
-                return `<i style="color: lightblue;" class="far fa-star"></i>`
+                return `<i style="color: gray;" class="far fa-star"></i>`
             case 2:
                 return `<i style="color: blue" class="far fa-star"></i>`
             case 3:

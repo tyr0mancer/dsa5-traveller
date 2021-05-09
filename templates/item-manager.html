@@ -9,7 +9,7 @@
             <header>
                 <h2>Datenquelle</h2>
             </header>
-            <div class="col-2" style="grid-template-columns: auto 32px">
+            <div class="col-2" style="grid-template-columns: auto 40px">
                 <div class="select-css">
                     <select id="select-item-pack" name="select-pack">
                         {{#select currentPack.collection}}
@@ -21,9 +21,9 @@
                     </select>
                     <label for="select-item-pack">Aus Kompendium</label>
                 </div>
-                <button type="button" name="select-pack"><i class="fas fa-sync-alt"></i></button>
+                <button type="button" name="select-pack"><i class="fas fa-cloud-download-alt"></i></button>
             </div>
-            <div class="col-2" style="grid-template-columns: auto 32px">
+            <div class="col-2" style="grid-template-columns: auto 40px">
                 <div class="select-css">
                     <select id="select-item-folder" name="select-folder">
                         {{#select currentFolder._id}}
@@ -35,7 +35,7 @@
                     </select>
                     <label for="select-item-folder">Lokale Ordner</label>
                 </div>
-                <button type="button" name="select-folder"><i class="fas fa-sync-alt"></i></button>
+                <button type="button" name="select-folder"><i class="fas fa-file-download"></i></button>
             </div>
             <div class="switch-checkbox">
                 <input id="show-description" name="description.show" class="filter"
@@ -50,10 +50,10 @@
         --------------------- -->
         <section class="round-box">
             <header>
-                <h2>Label</h2>
+                <h2>Tag / Label</h2>
             </header>
             <main>
-                <div class="col-3" style="grid-template-columns: 50px auto auto">
+                <div class="col-3" style="grid-template-columns: 70px auto auto">
                     <div>
                         <div class="switch-checkbox">
                             <input id="overwrite.general" name="overwrite.general" class="tag"
@@ -71,7 +71,7 @@
                                     {{/select}}
                                 </select>
                             </div>
-                            {{{showStarRating tag.value.general}}}
+                            <div style="text-align: center; font-size: 2em">{{{showStarRating tag.value.general}}}</div>
                         </div>
                     </div>
                     <div>
@@ -134,7 +134,7 @@
                     <span>{{currentLocation.biome.name}}</span>
                 </div>
             </main>
-            <button type="button" name="apply-current-location">Als Tag verwenden</button>
+            <button type="button" name="apply-current-location">Als Tag / Label verwenden</button>
         </section>
 
     </div>
@@ -264,8 +264,8 @@
                 {{/if}}
 
                 <td class="apply-tag" data-item-id="{{_id}}">
-                    <div style="font-size: 1em;"> {{{showStarRating data.availability.general}}}</div>
-                    <div style="font-size: 1em;"> {{{showStarRating data.data.availability.general}}}</div>
+                    <div style="font-size: 2em;"> {{{showStarRating data.availability.general}}}</div>
+                    <div style="font-size: 2em;"> {{{showStarRating data.data.availability.general}}}</div>
                 </td>
                 <td class="apply-tag" data-item-id="{{_id}}">
                     {{#each data.availability.regions}}
