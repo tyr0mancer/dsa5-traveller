@@ -41,7 +41,7 @@ export class ItemManager extends Application {
             currentPack: this.currentPack,
             currentFolder: this.currentFolder,
             filter: this.filter,
-            tag: this.tag,
+            tag: this.tag.value,
             sorting: this.sorting,
             mainIndex: this.itemList,
             filteredIndex: this.filteredIndex,
@@ -66,9 +66,11 @@ export class ItemManager extends Application {
         // tag / label
         html.find("button[name=apply-current-location]").click((event) => this._applyCurrentLocation(event))
 
-        html.find("input.tag[type=text]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
+/*
+        html.find("input.tag[type=text]").change((event) => this.tag.value[event.currentTarget.name] = event.currentTarget.value)
         html.find("input.tag[type=checkbox]").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.checked === true)
         html.find("select.tag").change((event) => this.tag[event.currentTarget.name] = event.currentTarget.value)
+*/
 
         html.find("td.apply-tag").mousedown((event) => {
             //event.preventDefault();
@@ -87,8 +89,8 @@ export class ItemManager extends Application {
     }
 
     _applyCurrentLocation(event) {
-        let cloc = JSON.stringify(Dsa5Availability.currentLocation)
-        alert('todo: _applyCurrentLocation(event): ' + cloc)
+        this.tag.value = this.currentLocation
+        this.render()
     }
 
     async _setFilter(event) {
@@ -236,7 +238,7 @@ export class ItemManager extends Application {
         const item = this.itemList.find(i => i._id === itemId);
         let availability = item.data?.data?.availability || item.data?.availability
         if (!availability) return
-        this.tag = availability
+        this.tag.value = availability
         this.render()
     }
 
@@ -245,9 +247,9 @@ export class ItemManager extends Application {
         const item = this.itemList.find(i => i._id === itemId);
         // local item
         if (item.data.data?.availability) {
-            await item.update({"data.availability": {...this.tag}})
+            await item.update({"data.availability": {...this.tag.value}})
         } else {
-            item.data.availability = {...this.tag}
+            item.data.availability = {...this.tag.value}
             await this.currentPack.updateEntity(item);
         }
         await this._applyFilter()
