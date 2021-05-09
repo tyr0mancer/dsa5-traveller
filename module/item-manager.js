@@ -274,17 +274,59 @@ export class ItemManager extends Application {
     }
 
     async _applyTag(event) {
+        console.clear()
+
         const itemId = $(event.currentTarget).attr("data-item-id")
         const item = this.itemList.find(i => i._id === itemId);
+
+        const mergeArray = (oldArray=[], newArray=[]) => {
+            console.log(oldArray, newArray)
+            let result = oldArray
+            for (let entry of newArray) {
+                let existingEntry = result.find(e => e[0] === entry[0])
+                if (!existingEntry)
+                    result.push(entry)
+                else
+                    existingEntry[1] = entry[1]
+            }
+            return result
+        }
+
+        const oldAvailability = item.data?.data.availability || item.data?.availability || {}
+        const newAvailability = {
+            general: (this.tag.overwrite?.general)
+                ? this.tag?.value?.general
+                : (!oldAvailability?.general)
+                    ? this.tag.value?.general
+                    : oldAvailability?.general,
+            regions: (this.tag.overwrite?.regions)
+                ? this.tag?.value?.regions
+                : (oldAvailability?.regions === undefined || !oldAvailability?.regions.length)
+                    ? this.tag.value?.regions
+                    : mergeArray(oldAvailability.regions, this.tag.value?.regions),
+            biomes: (this.tag.overwrite?.biomes)
+                ? this.tag?.value?.biomes
+                : (oldAvailability?.biomes === undefined)
+                    ? this.tag.value?.biomes
+                    : mergeArray(oldAvailability.biomes, this.tag.value?.biomes),
+        }
+
+        console.log(this.tag.overwrite)
+        console.log(oldAvailability)
+        console.log(this.tag.value)
+        console.log(newAvailability)
+
+
         // local item
         if (item.data.data?.availability) {
-            await item.update({"data.availability": {...this.tag.value}})
+            await item.update({"data.availability": newAvailability})
         } else {
-            item.data.availability = {...this.tag.value}
+            item.data.availability = newAvailability
             await this.currentPack.updateEntity(item);
         }
         await this._applyFilter()
     }
+
 
     _changeEntryWeight(event) {
         //event.preventDefault();
