@@ -136,7 +136,6 @@ export function getItemAvailability({applicableLocation = Dsa5Availability.curre
     const availability = item?.data?.availability ? item?.data?.availability : item?.data?.data?.availability
     if (!availability)
         return -1 // todo would  false, undefined, null ? or should it be a promise.reject?
-    console.log(availability)
     // check availability data against region and biome
     const generalAvailability = (availability.general !== undefined && availability.general !== "") ? availability.general : Dsa5Availability.DEFAULT_AVAILABILITY
     const maxRegionValueArray = availability.regions?.filter(e => applicableRegionKeys.includes(e[0])).map(e => e[1])

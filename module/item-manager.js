@@ -432,13 +432,13 @@ export class ItemManager extends Application {
 
     async _calculateAvailability() {
         for (let item of this.itemList) {
-/*
-            let applicableRegionKeys = this.tag?.value?.regions?.map(r => r[0]) || []
-            let applicableBiomeKey = this.tag?.value?.biomes[0] ? this.tag.value.biomes[0][0] : ''
-            let current = getItemAvailability({item, applicableRegionKeys, applicableBiomeKey})
-*/
+            /*
+            // if you wanna use the tag info instead
+                let applicableRegionKeys = this.tag?.value?.regions?.map(r => r[0]) || []
+                let applicableBiomeKey = this.tag?.value?.biomes[0] ? this.tag.value.biomes[0][0] : ''
+                let current = getItemAvailability({item, applicableRegionKeys, applicableBiomeKey})
+            */
             let current = getItemAvailability({item})
-            console.log(current)
             await this._updateItemAvailability(item, {current})
         }
 
